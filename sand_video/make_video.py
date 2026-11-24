@@ -118,11 +118,180 @@ def draw_crumbs(canvas, crumbs):
             canvas[yi + 3:yi + 4, xi:xi + 4] = COLORS[c] * 0.65
 
 
+# ---------------------------------------------------------------- hands & cup
+SKIN = hexc("#f2c4a2")
+SS = 3  # supersampling for smooth hand edges
+
+
+def _layer(img, mask_img, color_fn):
+    m = np.asarray(mask_img, np.float32)[..., None] / 255
+    h, w = m.shape[:2]
+    gy, gx = np.mgrid[0:h, 0:w].astype(np.float32)
+    col = color_fn(gx, gy)
+    img[..., :3] = img[..., :3] * (1 - m) + col * m
+    img[..., 3:] = np.maximum(img[..., 3:], m)
+
+
+def make_fist(fw, fh):
+    """Fist gripping a vertical object at the sprite centre; arm leaves to +x."""
+    pad = 40
+    w, h = (fw + 2 * pad) * SS, (fh + 2 * pad) * SS
+    img = np.zeros((h, w, 4), np.float32)
+    cx, cy = w / 2, h / 2
+
+    def P(x, y):
+        return (cx + x * SS, cy + y * SS)
+
+    def shape(draw_fn, color_fn):
+        mk = Image.new("L", (w, h), 0)
+        draw_fn(ImageDraw.Draw(mk))
+        _layer(img, mk, color_fn)
+
+    # back of the hand (towards the arm)
+    shape(lambda d: d.rounded_rectangle([P(-fw * 0.2, -fh / 2 - 4), P(fw / 2 + 10, fh / 2 + 4)],
+                                        radius=45 * SS, fill=255),
+          lambda gx, gy: SKIN * (0.82 + 0.12 * (1 - gy / h))[..., None])
+    fh4 = fh / 4
+    for i in range(4):
+        y0 = -fh / 2 + i * fh4
+        y1 = y0 + fh4 + 4
+        x0 = -fw / 2 + (4 if i in (0, 3) else 0) + (10 if i == 3 else 0)
+        def cf(gx, gy, y0=y0, y1=y1):
+            v = np.clip((gy / SS - (cy / SS + y0)) / (y1 - y0), 0, 1)
+            sh = 1.06 - 0.28 * v ** 1.6
+            tipl = 1 + 0.05 * np.clip(1 - (gx / SS - (cx / SS - fw / 2)) / 50, 0, 1)
+            return SKIN * (sh * tipl)[..., None]
+        shape(lambda d, y0=y0, y1=y1, x0=x0: d.rounded_rectangle(
+            [P(x0, y0), P(fw * 0.42, y1)], radius=int((y1 - y0) / 2 * SS), fill=255), cf)
+        # knuckle crease
+        shape(lambda d, y0=y0, y1=y1: d.line([P(fw * 0.05, y0 + 8), P(fw * 0.08, y1 - 8)],
+                                             fill=255, width=2 * SS),
+              lambda gx, gy: SKIN * 0.78)
+    # thumb across the top
+    def thumb(d):
+        d.line([P(fw * 0.38, -fh / 2 + 6), P(-fw * 0.18, -fh / 2 - 8)], fill=255, width=40 * SS)
+        d.ellipse([P(-fw * 0.18 - 20, -fh / 2 - 28), P(-fw * 0.18 + 20, -fh / 2 + 12)], fill=255)
+    shape(thumb, lambda gx, gy: SKIN * (1.08 - 0.25 * np.clip((gy / SS - cy / SS + fh / 2 + 28) / 50, 0, 1))[..., None])
+    # thumbnail
+    shape(lambda d: d.rounded_rectangle([P(-fw * 0.18 - 14, -fh / 2 - 24), P(-fw * 0.18 + 12, -fh / 2 - 4)],
+                                        radius=8 * SS, fill=255),
+          lambda gx, gy: hexc("#f7d9cc"))
+    out = Image.fromarray((np.clip(img, 0, 1) * 255).astype(np.uint8), "RGBA")
+    return out.resize((fw + 2 * pad, fh + 2 * pad), Image.LANCZOS)
+
+
+def draw_arm(canvas, p0, direction, length, w0, w1):
+    dx, dy = direction
+    nx, ny = -dy, dx
+    p1 = (p0[0] + dx * length, p0[1] + dy * length)
+    pts = [(p0[0] + nx * w0 / 2, p0[1] + ny * w0 / 2), (p1[0] + nx * w1 / 2, p1[1] + ny * w1 / 2),
+           (p1[0] - nx * w1 / 2, p1[1] - ny * w1 / 2), (p0[0] - nx * w0 / 2, p0[1] - ny * w0 / 2)]
+    reg = poly_mask(pts)
+    if not reg:
+        return
+    y0, y1, x0, x1, m = reg
+    gy, gx = np.mgrid[y0:y1, x0:x1].astype(np.float32)
+    along = np.clip(((gx - p0[0]) * dx + (gy - p0[1]) * dy) / length, 0, 1)
+    s = ((gx - p0[0]) * nx + (gy - p0[1]) * ny) / ((w0 + (w1 - w0) * along) / 2)
+    shade = 0.72 + 0.32 * (1 - np.clip(s, -1, 1) ** 2) ** 0.5 + 0.04 * s
+    paint(canvas, None, reg, SKIN * shade[..., None])
+
+
+def paste_rgba(canvas, img, x, y):
+    a = np.asarray(img, np.float32) / 255
+    h, w = a.shape[:2]
+    x, y = int(round(x)), int(round(y))
+    sx0, sy0 = max(0, -x), max(0, -y)
+    dx0, dy0 = max(0, x), max(0, y)
+    dx1, dy1 = min(WW, x + w), min(H, y + h)
+    if dx1 <= dx0 or dy1 <= dy0:
+        return
+    a = a[sy0:sy0 + dy1 - dy0, sx0:sx0 + dx1 - dx0]
+    al = a[..., 3:4]
+    canvas[dy0:dy1, dx0:dx1] = canvas[dy0:dy1, dx0:dx1] * (1 - al) + a[..., :3] * al
+
+
+KNIFE_FIST = make_fist(150, 190)
+CUP_FIST = make_fist(250, 200)
+
+# glass cup (local coords, origin at cup centre, mouth up)
+CS = 900
+CUP_TOP, CUP_BOT, CUP_HT, CUP_HB = -160, 160, 115, 88
+CUP_LIP = (-CUP_HT, CUP_TOP)
+CUP_GRIP = (25, 30)
+
+
+def cup_hw(y):
+    return CUP_HT + (CUP_HB - CUP_HT) * (y - CUP_TOP) / (CUP_BOT - CUP_TOP)
+
+
+def make_cup_glass():
+    w = h = CS * SS
+    c = CS / 2
+
+    def P(x, y):
+        return ((c + x) * SS, (c + y) * SS)
+    back = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(back)
+    body = [P(-CUP_HT, CUP_TOP), P(CUP_HT, CUP_TOP), P(CUP_HB, CUP_BOT), P(-CUP_HB, CUP_BOT)]
+    d.polygon(body, fill=(235, 245, 255, 50))
+    front = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(front)
+    d.line(body + [body[0]], fill=(255, 255, 255, 170), width=5 * SS, joint="curve")
+    d.ellipse([P(-CUP_HB, CUP_BOT - 10), P(CUP_HB, CUP_BOT + 10)], outline=(255, 255, 255, 150), width=4 * SS)
+    d.line([P(-CUP_HT + 30, CUP_TOP + 25), P(-CUP_HB + 25, CUP_BOT - 25)], fill=(255, 255, 255, 120), width=12 * SS)
+    d.line([P(CUP_HT - 30, CUP_TOP + 40), P(CUP_HB - 25, CUP_BOT - 40)], fill=(255, 255, 255, 60), width=6 * SS)
+    d.ellipse([P(-CUP_HT, CUP_TOP - 12), P(CUP_HT, CUP_TOP + 12)], outline=(255, 255, 255, 190), width=4 * SS)
+    return back.resize((CS, CS), Image.LANCZOS), front.resize((CS, CS), Image.LANCZOS)
+
+
+CUP_BACK, CUP_FRONT = make_cup_glass()
+_cy, _cx = np.mgrid[0:CS, 0:CS].astype(np.float32) - CS / 2
+CUP_IN = (_cy > CUP_TOP) & (_cy < CUP_BOT - 6) & (np.abs(_cx) < cup_hw(_cy) - 5)
+
+
+def rot(p, a):
+    r = math.radians(a)
+    return (p[0] * math.cos(r) + p[1] * math.sin(r), -p[0] * math.sin(r) + p[1] * math.cos(r))
+
+
+def draw_cup(canvas, t, ci, lip):
+    """Tilted glass cup with layered sand, held by a hand; lip placed at `lip`."""
+    a = 98 + 22 * min(t / 6.8, 1)
+    r = math.radians(a)
+    gdir = (-math.sin(r), math.cos(r))  # screen-down in cup coords
+    d = _cx * gdir[0] + _cy * gdir[1]
+    dmax = d[CUP_IN].max()
+    level = 25 + 110 * (1 - min(t / 6.8, 1))
+    sand = CUP_IN & (d >= dmax - level)
+    band = np.minimum(ci + ((_cy - CUP_TOP) // 75).astype(int), 4)
+    col = np.stack(COLORS)[band] * GRAIN[:CS, :CS, None] * 0.97
+    surf = sand & (d < dmax - level + 6)
+    col[surf] *= 1.08
+    rgba = np.zeros((CS, CS, 4), np.float32)
+    rgba[..., :3] = col
+    rgba[..., 3] = sand
+    spr = CUP_BACK.copy()
+    spr.alpha_composite(Image.fromarray((np.clip(rgba, 0, 1) * 255).astype(np.uint8), "RGBA"))
+    spr.alpha_composite(CUP_FRONT)
+    fw, fh = CUP_FIST.size
+    spr.alpha_composite(CUP_FIST, (int(CS / 2 + CUP_GRIP[0] - fw / 2), int(CS / 2 + CUP_GRIP[1] - fh / 2)))
+    spr = spr.rotate(a, resample=Image.BICUBIC, center=(CS / 2, CS / 2))
+    lr = rot(CUP_LIP, a)
+    ctr = (lip[0] - lr[0], lip[1] - lr[1])
+    # forearm leaves the fist away from the cup
+    g = rot((CUP_GRIP[0] + 90, CUP_GRIP[1]), a)
+    adir = rot((1, 0), a)
+    draw_arm(canvas, (ctr[0] + g[0], ctr[1] + g[1]), adir, 1200, 150, 175)
+    paste_rgba(canvas, spr, ctr[0] - CS / 2, ctr[1] - CS / 2)
+
+
 # ---------------------------------------------------------------- scene A: pour
 CX = 925
 BASE = 1450
 SIG = 215.0
 POUR_T = 7.0
+LIP_Y = 380
 CHANGE = 1.4
 
 
@@ -163,22 +332,23 @@ class Pour:
             reg = (top, BASE, MX0, MX1, m)
             paint(canvas, None, reg, col)
         # stream column
+        wob = 5 * math.sin(t * 2.3)
         if t < 6.8:
             st = BASE - a
-            wob = 5 * math.sin(t * 2.3)
             sx0, sx1 = int(CX + wob - 9), int(CX + wob + 9)
-            sy1 = int(st)
-            if sy1 > 0:
-                gr = np.roll(GRAIN[0:sy1, sx0:sx1], frame * 41, axis=0)
+            sy0, sy1 = LIP_Y, int(st)
+            if sy1 > sy0:
+                gr = np.roll(GRAIN[sy0:sy1, sx0:sx1], frame * 41, axis=0)
                 xs = np.arange(sx0, sx1, dtype=np.float32)
-                prof = np.clip(1 - np.abs(xs - (CX + wob)) / 9, 0, 1) ** 0.6
-                m = np.tile(prof, (sy1, 1))
-                paint(canvas, None, (0, sy1, sx0, sx1, m * 0.95),
+                yv = np.arange(sy0, sy1, dtype=np.float32)[:, None]
+                widen = np.clip(0.55 + (yv - sy0) / 120, 0, 1)
+                prof = np.clip(1 - np.abs(xs - (CX + wob))[None, :] / (9 * widen), 0, 1) ** 0.6
+                paint(canvas, None, (sy0, sy1, sx0, sx1, prof * 0.95),
                       COLORS[ci] * gr[..., None])
             # particles
             n = 28
             new = np.stack([
-                CX + wob + rng.normal(0, 7, n), rng.uniform(-40, sy1, n) * 0.3,
+                CX + wob + rng.normal(0, 7, n), LIP_Y + rng.uniform(0, (sy1 - LIP_Y) * 0.3, n),
                 rng.normal(0, 0.5, n), rng.uniform(8, 14, n), np.full(n, ci)], 1)
             spl = 10
             spray = np.stack([
@@ -193,6 +363,8 @@ class Pour:
             keep = p[:, 1] < self.surface(p[:, 0], a) - 1
             self.p = p = p[keep]
             draw_crumbs(canvas, [(x, y, int(c)) for x, y, _, _, c in p])
+        lift = 900 * ease((t - 6.8) / 0.6) ** 2
+        draw_cup(canvas, t, ci, (CX + wob, LIP_Y - lift))
         return canvas, 385
 
 
@@ -286,6 +458,11 @@ class Cut:
                 gx = np.arange(x0, x1, dtype=np.float32)[None, :]
                 col = hexc("#5a3b2c") * (0.8 + 0.35 * np.clip((gx - c) / DX, 0, 1))[..., None]
                 paint(canvas, None, hd, np.broadcast_to(col, (y1 - y0, x1 - x0, 3)))
+            # hand holding the handle
+            gx_, gy_ = c + DX / 2, tip - 675 - DY / 2
+            draw_arm(canvas, (gx_ + 25, gy_ - 5), (0.5, -0.866), 1500, 155, 180)
+            fw, fh = KNIFE_FIST.size
+            paste_rgba(canvas, KNIFE_FIST, gx_ - fw / 2, gy_ - fh / 2)
         # crumbs
         if 0.4 <= u < 1.9:
             for _ in range(3):

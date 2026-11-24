@@ -165,11 +165,11 @@ SC.threeDangers=()=>`<rect width="1920" height="1080" fill="#fff"/>`+big(960,230
    big(x,840,t,{size:56}),{c:'pop',st:`--w:${w}s`})).join('');
 SC.dryWet=()=>`<rect width="1920" height="1080" fill="#fff"/>`+P('M960,60 V1020',{w:6,st:'stroke-dasharray:24 18'})+
   big(480,160,'ҚҰРҒАҚ',{size:96})+big(1440,160,'СУ',{size:96,fill:'#2f78b7'})+
-  hero(480,880,.9,{mood:'calm',arms:'down'})+P('M600,520 l60,-40',{s:C.red,w:8})+big(480,1000,'1×',{size:110})+
+  hero(480,880,.9,{mood:'calm',arms:'down'})+P('M600,520 l60,-40',{s:C.red,w:8})+big(690,640,'1×',{size:110})+
   hero(1440,880,.9,{mood:'worried',arms:'cross',c:'shiver-hard'})+
   [[-1,-1],[1,-1],[-1,0],[1,0],[-1,1],[1,1],[0,-1.4]].map(([a,b],i)=>arrow(1440+a*110,520+b*120,1440+a*150,520+b*150,1440+a*200,520+b*190,{s:C.red,w:8,c:'draw',st:`--w:${.8+i*.1}s;--d:.4s`})).join('')+
   [[1380,400],[1500,420],[1330,600],[1560,640]].map(([x,y],i)=>`<path class="fall" style="--w:${i*.3}s;--x:0px;--y:120px" d="M${x},${y} q-10,20 0,26 q10,-6 0,-26Z" fill="#3f87c2"/>`).join('')+
-  big(1440,1000,'25×',{size:130,fill:C.red,c:'pop',w:1.4});
+  big(1770,660,'25×',{size:120,fill:C.red,c:'pop',w:1.4});
 SC.freeze=()=>{let g=`<defs>${vgrad('fz','#2f4a66','#8fb2cc')}</defs><rect width="1920" height="1080" fill="url(#fz)"/>`+rain(150,{op:.6,d:.5,col:'#e1ecf5'});
   g+=G(hero(760,950,1.05,{mood:'worried',arms:'cross',big:1}),{c:'shiver-hard'})+`<rect x="560" y="300" width="400" height="660" fill="#8fc3ec" opacity=".25" class="fade" style="--w:1s;--d:3s"/>`;
   for(let i=0;i<8;i++){const a=i*Math.PI/4;g+=P(`M${r1(760+Math.cos(a)*300)},${r1(560+Math.sin(a)*300)} l${r1(Math.cos(a)*40)},${r1(Math.sin(a)*40)}`,{s:'#e8f4fc',w:6,c:'glow'})}
@@ -192,8 +192,7 @@ SC.dig=()=>{let g=`<rect width="1920" height="1080" fill="#fff"/>`+big(960,140,'
   g+=`<rect x="160" y="260" width="1600" height="760" fill="none" stroke="${INK}" stroke-width="8"/>`+`<path d="M700,1000 C700,700 820,560 960,560 C1100,560 1220,700 1220,1000Z" fill="#5a4330" stroke="${INK}" stroke-width="6"/>`+
    G(`<path d="M720,1000 C760,860 860,800 960,820 C1080,800 1180,880 1200,1000Z" fill="#7a5a3a"/>`+P('M800,940 q40,-20 80,0 M900,960 l60,-10 M1040,950 l50,10',{s:'#efe6d2',w:10})+
      `<circle cx="1000" cy="900" r="34" fill="#efe6d2" stroke="${INK}" stroke-width="4"/>`,{c:'fade',st:'--w:1s'})+
-   G(`<rect x="1350" y="250" width="26" height="200" rx="8" fill="#a8743f" stroke="${INK}" stroke-width="5" transform="rotate(30 1363 350)"/><path d="M1290,420 l60,40 l-30,40 l-60,-40Z" fill="#8d9096" stroke="${INK}" stroke-width="5"/>`,{c:'bob',st:'--a:-14px;--d:.7s'})+
-   T(300,1000,'лай қабаты',{size:44,fill:'#fff',c:'fade',st:'--w:1.6s'});
+   G(`<rect x="1350" y="250" width="26" height="200" rx="8" fill="#a8743f" stroke="${INK}" stroke-width="5" transform="rotate(30 1363 350)"/><path d="M1290,420 l60,40 l-30,40 l-60,-40Z" fill="#8d9096" stroke="${INK}" stroke-width="5"/>`,{c:'bob',st:'--a:-14px;--d:.7s'});
   return g};
 SC.leopardRun=()=>stormSky()+`<path d="M0,862 C300,846 600,876 960,858 C1300,842 1600,868 1920,852 V1080 H0Z" fill="${C.groundW}" stroke="${INK}" stroke-width="6"/>`+
   `<path d="M60,862 C60,560 200,420 380,420 C560,420 640,600 660,862Z" fill="${C.rock}" stroke="${INK}" stroke-width="8"/><path d="M150,862 C150,700 240,620 360,620 C480,620 540,720 550,862Z" fill="${C.cave}" stroke="${INK}" stroke-width="7"/>`+
@@ -223,14 +222,14 @@ SC.faceoff=()=>caveInterior('M0,0 H600 C500,200 300,260 0,240Z',{seed:13})+rockF
   `<ellipse class="glow" cx="960" cy="800" rx="700" ry="300" fill="#e0b070" opacity=".18"/>`+
   hero(560,920,1,{mood:'scared',arms:'shrug',big:1,c:'shiver'})+leopard(1340,930,1.05,{flip:0,fangs:1})+
   sfx(960,240,'БЕТПЕ-БЕТ!',{size:110,w:.6,fill:'#ffe0a0',stroke:'#2b1c10'})+sfx(1150,640,'ырррр',{size:60,w:1.2})+vignette(.6);
-SC.task=()=>`<rect width="1920" height="1080" fill="#fff"/>`+big(960,250,'№1 МІНДЕТ',{size:110,c:'fade'})+fire(960,800,1.4)+big(960,1000,'ОТТЫ ӨШІРМЕУ',{size:110,fill:'#b8460f',c:'pop',w:.8});
+SC.task=()=>`<rect width="1920" height="1080" fill="#fff"/>`+big(960,180,'№1 МІНДЕТ',{size:110,c:'fade'})+fire(960,690,1.3)+big(960,870,'ОТТЫ ӨШІРМЕУ',{size:110,fill:'#b8460f',c:'pop',w:.8});
 SC.matches=()=>`<rect width="1920" height="1080" fill="#fff"/>`+
   G(`<rect x="420" y="520" width="380" height="220" rx="12" fill="#3f7fb3" stroke="${INK}" stroke-width="8"/><rect x="440" y="540" width="340" height="60" fill="#8a5a32"/>`+
    [0,1,2].map(i=>`<rect x="${500+i*60}" y="${380+i*10}" width="14" height="200" fill="#e7c38a" stroke="${INK}" stroke-width="4" transform="rotate(${-10+i*8} ${507+i*60} 580)"/><ellipse cx="${507+i*60}" cy="${382+i*10}" rx="16" ry="20" fill="${C.red}" stroke="${INK}" stroke-width="4" transform="rotate(${-10+i*8} ${507+i*60} 580)"/>`).join(''),{c:'pop',st:'--w:.2s'})+
   G(`<rect x="1150" y="420" width="200" height="320" rx="30" fill="${C.red}" stroke="${INK}" stroke-width="8"/><rect x="1150" y="380" width="200" height="70" rx="10" fill="#c9ccd1" stroke="${INK}" stroke-width="7"/>`+
    `<path class="flick" d="M1250,250 C1270,290 1290,330 1270,370 C1260,385 1240,385 1230,370 C1212,330 1232,290 1250,250Z" fill="#ffc53d" stroke="${INK}" stroke-width="5"/>`,{c:'pop',st:'--w:.6s'})+
   big(960,960,'БІЗ ҮШІН — ҮЙРЕНШІКТІ',{size:96,c:'fade',w:1});
-SC.n40=()=>`<rect width="1920" height="1080" fill="#fff"/>`+big(960,420,'40 000 ЖЫЛ БҰРЫН',{size:150,c:'fade'})+big(960,640,'отты жаға алмаған',{size:96,ls:0,fill:C.red,c:'pop',w:.8})+G(`<rect x="-20" y="-120" width="40" height="240" fill="#e7c38a" stroke="${INK}" stroke-width="6"/><ellipse cx="0" cy="-120" rx="34" ry="42" fill="${C.red}" stroke="${INK}" stroke-width="6"/>`,{t:'translate(960,880) rotate(-30)',c:'fade',st:'--w:1.2s'})+P('M860,760 L1060,1000 M1060,760 L860,1000',{s:C.red,w:18,c:'draw',st:'--w:1.6s;--d:.4s'});
+SC.n40=()=>`<rect width="1920" height="1080" fill="#fff"/>`+big(960,420,'40 000 ЖЫЛ БҰРЫН',{size:150,c:'fade'})+big(960,640,'отты жаға алмаған',{size:96,ls:0,fill:C.red,c:'pop',w:.8})+G(`<rect x="-20" y="-120" width="40" height="240" fill="#e7c38a" stroke="${INK}" stroke-width="6"/><ellipse cx="0" cy="-120" rx="34" ry="42" fill="${C.red}" stroke="${INK}" stroke-width="6"/>`,{t:'translate(960,800) rotate(-30)',c:'fade',st:'--w:1.2s'})+P('M870,690 L1050,900 M1050,690 L870,900',{s:C.red,w:18,c:'draw',st:'--w:1.6s;--d:.4s'});
 SC.lightning=()=>{let g=stormSky()+`<path d="M0,880 C600,870 1300,890 1920,875 V1080 H0Z" fill="${C.groundW}" stroke="${INK}" stroke-width="6"/>`+
    `<rect x="1180" y="560" width="60" height="330" fill="#6b4a2e" stroke="${INK}" stroke-width="7"/><path d="M1040,640 L1210,300 L1380,640Z" fill="#4f6a35" stroke="${INK}" stroke-width="8"/>`;
   g+=`<rect class="flash" style="--w:.6s" width="1920" height="1080" fill="#fff"/>`+P('M1300,0 L1240,150 L1300,160 L1210,330',{s:'#fff6b0',w:16,c:'flash',st:'--w:.6s'});
@@ -289,7 +288,7 @@ SC.maps=()=>`<rect width="1920" height="1080" fill="#a9d2ea"/>`+
    `<path class="popb" style="--w:.6s" d="M370,300 C350,265 335,250 335,236 A35,35 0 1 1 405,236 C405,250 390,265 370,300Z" fill="${C.red}" stroke="#fff" stroke-width="5"/>`+T(270,470,'ФРАНЦИЯ',{size:60,anchor:'middle',font:SFX_FONT}),{t:'translate(160,220) scale(1.15)'})+
   G(P('M200,100 L270,170 L400,130 M270,170 L255,270 L350,320 M255,270 L200,400',{w:58})+P('M200,100 L270,170 L400,130 M270,170 L255,270 L350,320 M255,270 L200,400',{s:'#e9cf8f',w:44})+
    `<path class="popb" style="--w:1.2s" d="M230,300 C210,265 195,250 195,236 A35,35 0 1 1 265,236 C265,250 250,265 230,300Z" fill="${C.red}" stroke="#fff" stroke-width="5"/>`+T(280,500,'ИНДОНЕЗИЯ',{size:60,anchor:'middle',font:SFX_FONT}),{t:'translate(1080,200) scale(1.15)'})+
-  `<rect x="560" y="900" width="800" height="120" rx="14" fill="#fff" stroke="${INK}" stroke-width="6" class="fade" style="--w:1.8s"/>`+big(960,990,'35–45 мың жыл бұрын',{size:80,ls:0,c:'fade',w:1.8});
+  `<rect x="560" y="60" width="800" height="120" rx="14" fill="#fff" stroke="${INK}" stroke-width="6" class="fade" style="--w:1.8s"/>`+big(960,150,'35–45 мың жыл бұрын',{size:80,ls:0,c:'fade',w:1.8});
 SC.wall=()=>{const s=s6();return s};
 SC.paintings=()=>{const ochre='#c56d26',red='#9e3220';
   const horse='M80,135 C150,105 260,110 325,108 C360,100 378,62 398,38 C412,26 428,34 432,48 L462,96 C464,108 446,114 436,104 C420,96 406,98 398,114 C388,138 380,160 362,176 C320,200 220,205 150,190 C115,182 90,165 80,135Z';
@@ -303,7 +302,7 @@ SC.paintings=()=>{const ochre='#c56d26',red='#9e3220';
    T(330,560,'жылқы',{size:56,fill:'#ffe7bf',c:'fade',st:'--w:.6s'})+T(1260,540,'арыстан',{size:56,fill:'#ffe7bf',c:'fade',st:'--w:1.2s'})+T(800,1000,'аю',{size:56,fill:'#ffe7bf',c:'fade',st:'--w:1.8s'})+vignette(.6)};
 SC.sunnyVs=()=>`<defs>${vgrad('sn','#7cc0ea','#d8eef9')}</defs><rect width="960" height="1080" fill="url(#sn)"/><circle cx="200" cy="180" r="80" fill="#ffd23f" stroke="${INK}" stroke-width="7"/>`+
   `<rect y="760" width="960" height="320" fill="${C.ground}"/>`+P('M0,760 H960',{w:6})+G(G(saiga(),{c:'bob',st:'--d:.4s;--a:-10px'}),{t:'translate(760,780) scale(1.4)'})+hero(380,800,.8,{arms:'spear',mood:'happy',look:[.2,0]})+
-  big(480,1000,'АҢШЫЛЫҚ!',{size:80})+
+  big(600,150,'АҢШЫЛЫҚ!',{size:80})+
   `<rect x="960" width="960" height="1080" fill="#1d1916"/><path d="M1200,1080 C1200,760 1320,620 1440,620 C1560,620 1680,760 1680,1080Z" fill="#000" stroke="#3d3632" stroke-width="8"/>`+
   heroSeat(1440,1040,.7,{mood:'worried',arms:'open',look:[0,0]})+big(1440,300,'ТАР ҚУЫСҚА?',{size:84,fill:'#ffe7bf'})+big(1440,470,'ЖОҚ!',{size:120,fill:C.red,c:'pop',w:1.2})+P('M960,0 V1080',{w:10});
 SC.paint=()=>s6();
@@ -328,11 +327,11 @@ SC.clearing=()=>{const s=s8();return s};
 SC.mudTracks=()=>{let g=`<rect width="1920" height="1080" fill="#7a5638"/>`+hatch(50,0,1920,0,1080,'#65462c',51)+`<rect width="1920" height="140" fill="#6f8f3a"/>`+P('M0,140 H1920',{w:6});
   for(let i=0;i<5;i++){g+=G(G(`<path d="M-60,40 C-130,-20 -110,-150 -30,-170 C0,-110 0,-30 -60,40Z M60,40 C130,-20 110,-150 30,-170 C0,-110 0,-30 60,40Z" fill="#3b2614" stroke="#24170b" stroke-width="8"/>`,{c:'pop',st:`--w:${r1(.3+i*.35)}s`}),{t:`translate(${300+i*340},${i%2?520:780}) rotate(80) scale(1.1)`})}
   g+=`<ellipse cx="1500" cy="300" rx="160" ry="40" fill="#bcdcf2" stroke="${INK}" stroke-width="5"/>`;
-  return g+sfx(960,960,'АЙНАДАЙ АНЫҚ ІЗ',{size:96,w:2,fill:'#ffe7bf',stroke:'#24170b'})};
+  return g+sfx(800,250,'АЙНАДАЙ АНЫҚ ІЗ',{size:96,w:2,fill:'#ffe7bf',stroke:'#24170b'})};
 SC.harvest=()=>s8();
 SC.protein=()=>`<rect width="1920" height="1080" fill="#fff"/>`+
   G(`<ellipse cx="0" cy="0" rx="70" ry="40" fill="#c58a4a" stroke="${INK}" stroke-width="7"/><ellipse cx="-90" cy="0" rx="40" ry="34" fill="#8a5a2e" stroke="${INK}" stroke-width="7"/><ellipse cx="90" cy="0" rx="60" ry="44" fill="#d9a46a" stroke="${INK}" stroke-width="7"/>`+P('M-40,30 l-30,50 M0,36 l0,54 M40,30 l30,50 M-40,-30 l-30,-50 M0,-36 l0,-54 M40,-30 l30,-50 M-120,-20 l-50,-40 M-120,20 l-50,40',{w:7}),{t:'translate(960,420) scale(2)',c:'bob',st:'--a:-8px;--d:.6s'})+
-  big(960,800,'АҚУЫЗҒА ӨТЕ БАЙ',{size:120,c:'pop',w:.6})+big(960,920,'термиттер',{size:70,ls:0,fill:'#8b3c14',c:'fade',w:1});
+  big(960,740,'АҚУЫЗҒА ӨТЕ БАЙ',{size:120,c:'pop',w:.6})+big(960,850,'термиттер',{size:70,ls:0,fill:'#8b3c14',c:'fade',w:1});
 SC.explorer=()=>s9();
 SC.three=()=>`<rect width="1920" height="1080" fill="#fff"/>`+[['ОЙЛАНАСЫЗ',300,.2],['ЖАСАЙСЫЗ',540,1],['ҮЙРЕНЕСІЗ',780,1.8]].map(([t,y,w])=>big(960,y,t,{size:150,c:'pop',w})).join('')+
   hero(260,1000,.55,{mood:'happy',arms:'up',outfit:'vest'});
@@ -340,8 +339,8 @@ SC.downtime=()=>{const items=[['ҚҰРАЛ',300],['КИІМ',630],['ӘҢГІМЕ
   const icons=[spear(-60,60,40,-60),`<path d="M-50,-60 L50,-60 L70,60 L-70,60Z" fill="${FUR}" stroke="${INK}" stroke-width="6"/>`,`<ellipse cx="0" cy="-10" rx="70" ry="48" fill="#fff" stroke="${INK}" stroke-width="6"/><path d="M-20,30 l-20,40 l40,-30Z" fill="#fff" stroke="${INK}" stroke-width="6"/>`,
     G(`<path d="M80,135 C150,105 260,110 325,108 C360,100 378,62 398,38 C412,26 428,34 432,48 L462,96 C464,108 446,114 436,104 C420,96 406,98 398,114 C388,138 380,160 362,176 C320,200 220,205 150,190 C115,182 90,165 80,135Z" fill="#c56d26" stroke="${INK}" stroke-width="10"/>`,{t:'translate(-130,-60) scale(.55)'}),
     [44,30,16].map(r=>`<ellipse rx="${r*1.5}" ry="${r*.8}" fill="none" stroke="#a07a45" stroke-width="10"/>`).join('')];
-  return `<rect width="1920" height="1080" fill="#fff"/>`+items.map(([t,x],i)=>G(G(icons[i],{t:`translate(${x},260)`})+big(x,420,t,{size:56})+P(`M${x},450 L960,700`,{w:5,c:'draw',st:`--w:${r1(1+i*.1)}s;--d:.7s`}),{c:'pop',st:`--w:${r1(i*.2)}s`})).join('')+
-   big(960,800,'ЖАҢБЫРЛЫ КҮНДЕР',{size:120,c:'pop',w:1.8})+big(960,940,'өркениеттің бастауы?',{size:72,ls:0,fill:'#8b3c14',c:'fade',w:2.4})};
+  return `<rect width="1920" height="1080" fill="#fff"/>`+items.map(([t,x],i)=>G(G(icons[i],{t:`translate(${x},260)`})+big(x,420,t,{size:56})+P(`M${x},450 L960,590`,{w:5,c:'draw',st:`--w:${r1(1+i*.1)}s;--d:.7s`}),{c:'pop',st:`--w:${r1(i*.2)}s`})).join('')+
+   big(960,720,'ЖАҢБЫРЛЫ КҮНДЕР',{size:120,c:'pop',w:1.8})+big(960,840,'өркениеттің бастауы?',{size:72,ls:0,fill:'#8b3c14',c:'fade',w:2.4})};
 
 /* ---------- timeline: each shot starts at the first word of its phrase ---------- */
 const Z=(a,b)=>[a,b];

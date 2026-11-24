@@ -30,6 +30,9 @@ const T3=()=>stormSky()+`<path d="M0,862 C300,846 600,876 960,858 C1300,842 1600
   `<rect class="x" width="1920" height="1080" fill="#fff" opacity=".18"/>`+P('M1500,0 L1430,190 L1500,205 L1390,430',{s:'#fff6b0',w:18})+
   bust(1420,910,1.1,'worried',[0,-.18])+drop(1130,330,1.3)+drop(1720,300,1.1)+rain(260,{op:.8,d:.5,col:'#dce6f0',w:4})+
   title([{t:'ЖАҢБЫР',fill:'#fff',size:200,y:330},{t:'ЖАУСА',fill:'#fff',size:200,y:540},{t:'НЕ ІСТЕР ЕДІҢ?',fill:'#ffd23f',size:96,y:700}]);
-window.make=i=>{const [bg,tx]=[T1,T2,T3][i]().split('<!--T-->');document.getElementById('out').innerHTML=`<svg class="scn" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">${DEFS2}<filter id="rough"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="2"/><feDisplacementMap in="SourceGraphic" scale="4" xChannelSelector="R" yChannelSelector="G"/></filter><g filter="url(#rough)">${bg}</g>${vignette(.45)}${tx}</svg>`;
+const TT=[{t:'ЖАҢБЫР ЖАУҒАНДА',fill:'#fff',size:86,y:330},{t:'ЕЖЕЛГІ АДАМДАР',fill:'#ffd23f',size:90,y:470},{t:'НЕ ІСТЕДІ?',fill:'#ff3b30',size:150,y:670}];
+const T4=()=>T1().split('<!--T-->')[0].replace("bust(1420,910,1.1","bust(1560,910,1")+'<!--T-->'+title(TT).replace('<!--T-->','');
+const T5=()=>T2().split('<!--T-->')[0]+'<!--T-->'+title([TT[0],TT[1],{...TT[2],fill:'#ff7a1a'}]).replace('<!--T-->','');
+window.make=i=>{const [bg,tx]=[T1,T2,T3,T4,T5][i]().split('<!--T-->');document.getElementById('out').innerHTML=`<svg class="scn" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">${DEFS2}<filter id="rough"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="2"/><feDisplacementMap in="SourceGraphic" scale="4" xChannelSelector="R" yChannelSelector="G"/></filter><g filter="url(#rough)">${bg}</g>${vignette(.45)}${tx}</svg>`;
   for(const a of document.getAnimations()){a.pause();a.currentTime=2500}};
 </script></body></html>

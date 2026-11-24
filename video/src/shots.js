@@ -68,8 +68,7 @@ function caveInterior(mouthD,o={}){ // dark cave seen from inside with a rainy o
 /* ---------- scenes ---------- */
 const SC={};
 SC.title=()=>stormSky()+`<path d="M0,820 C500,800 1200,830 1920,810 V1080 H0Z" fill="${C.groundW}" stroke="${INK}" stroke-width="6"/>`+
-  `<path d="M1180,820 C1180,560 1300,430 1460,430 C1620,430 1720,580 1730,820Z" fill="${C.rock}" stroke="${INK}" stroke-width="8"/>`+
-  `<path d="M1300,820 C1300,640 1370,560 1450,560 C1540,560 1600,650 1600,820Z" fill="${C.cave}" stroke="${INK}" stroke-width="7"/>`+
+  boulderCave(1450,830,.62,2)+
   fire(1450,820,.45)+hero(1380,830,.42,{mood:'worried',arms:'cross',c:'shiver'})+
   rain(200,{op:.6,d:.5,col:C.rainD})+
   `<rect x="140" y="250" width="1000" height="330" rx="24" fill="#fff" opacity=".92"/>`+
@@ -197,7 +196,7 @@ SC.dig=()=>{let g=`<rect width="1920" height="1080" fill="#fff"/>`+big(960,140,'
    G(`<rect x="1350" y="250" width="26" height="200" rx="8" fill="#a8743f" stroke="${INK}" stroke-width="5" transform="rotate(30 1363 350)"/><path d="M1290,420 l60,40 l-30,40 l-60,-40Z" fill="#8d9096" stroke="${INK}" stroke-width="5"/>`,{c:'bob',st:'--a:-14px;--d:.7s'});
   return g};
 SC.leopardRun=()=>stormSky()+`<path d="M0,862 C300,846 600,876 960,858 C1300,842 1600,868 1920,852 V1080 H0Z" fill="${C.groundW}" stroke="${INK}" stroke-width="6"/>`+
-  `<path d="M60,862 C60,560 200,420 380,420 C560,420 640,600 660,862Z" fill="${C.rock}" stroke="${INK}" stroke-width="8"/><path d="M150,862 C150,700 240,620 360,620 C480,620 540,720 550,862Z" fill="${C.cave}" stroke="${INK}" stroke-width="7"/>`+
+  boulderCave(360,870,.75,5)+
   G(G(leopard(0,900,1.1,{run:1}),{c:'bob',st:'--a:-22px;--d:.35s'}),{c:'runin'})+
   arrow(1500,700,1100,640,760,700,{s:'#fff',w:8,c:'draw',st:'--w:1s'})+sfx(1300,420,'АҢДАР ДА ҚАШАДЫ',{size:76,w:1.6})+rain(200,{op:.6,d:.45,col:C.rainD})+vignette(.45);
 SC.eyes=()=>`<rect width="1920" height="1080" fill="#141210"/>`+

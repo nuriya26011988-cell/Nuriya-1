@@ -342,9 +342,7 @@ function s8(){
     ${P('M620,860 A500,500 0 0 1 1620,860',{s:'#3f87c2',w:14,c:'draw',o:.3,st:'--d:2s;--w:2.4s'})}
     <g transform="translate(1600,200)">${G(P(rays,{s:'#e0a800',w:8}),{c:'sunrays'})}<circle r="80" fill="#ffd23f" stroke="${INK}" stroke-width="7"/></g>
     ${cloud(780,150,1.5,'#c3ccd4','partL')}${cloud(1140,170,1.6,'#b8c2cb','partR')}
-    <path d="M0,120 C160,100 360,180 420,420 C450,560 440,760 470,880 L0,880Z" fill="#cfc8bc" stroke="${INK}" stroke-width="7"/>
-    ${hatch(20,20,380,200,820,'#a99f90',41)}
-    <path d="M60,880 C60,620 140,480 250,480 C350,480 400,640 400,880Z" fill="#3a352f" stroke="${INK}" stroke-width="6"/>
+    ${boulderCave(250,885,.8,9)}
     <path d="M0,872 C400,860 1000,880 1920,862 V1080 H0Z" fill="#d8c3a5" stroke="${INK}" stroke-width="5"/>
     <ellipse cx="1180" cy="1040" rx="140" ry="22" fill="#cfe3f3" stroke="${INK}" stroke-width="4"/>${P('M1120,1036 l18,0 M1200,1044 l26,0',{s:'#fff',w:5})}
     ${tracks}
@@ -355,7 +353,7 @@ function s8(){
     ${hero}
     ${note(840,820,'анық із',[880,832,900,880,900,940],3.2,{size:42})}
     ${note(1420,780,'саңырауқұлақ',[1500,792,1560,820,1610,850],3.6,{size:42})}
-    ${note(1500,740,'термит = ақуыз',[1700,760,1790,820,1790,990],4,{size:40})}`;
+    ${note(1560,640,'термит = ақуыз',[1760,660,1800,800,1790,990],4,{size:40})}`;
 }
 
 function s9(){

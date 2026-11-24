@@ -74,3 +74,41 @@ function caveInterior(mouthD,o={}){
    G(rain(170,{op:.8,d:.5,col:'#b9c9da',seed:o.seed||6}),{clip:'mouth'})+
    P(mouthD,{w:10,s:'#1b1815'})+P(mouthD,{w:3,s:'#8a8076',o:.6});
 }
+
+/* ---- v3: mouths, natural knees-up sitting, boulder caves ---- */
+const head0=head;
+const MOUTHS={
+  worried:(x,y,r)=>`M${r1(x-.15*r)},${r1(y+.03*r)} Q${r1(x)},${r1(y-.07*r)} ${r1(x+.15*r)},${r1(y+.03*r)}`,
+  happy:(x,y,r)=>`M${r1(x-.17*r)},${r1(y-.02*r)} Q${r1(x)},${r1(y+.16*r)} ${r1(x+.17*r)},${r1(y-.02*r)}`,
+  calm:(x,y,r)=>`M${r1(x-.12*r)},${r1(y)} Q${r1(x)},${r1(y+.07*r)} ${r1(x+.12*r)},${r1(y)}`,
+  focus:(x,y,r)=>`M${r1(x-.12*r)},${r1(y+.01*r)} L${r1(x+.12*r)},${r1(y-.02*r)}`,
+  curious:(x,y,r)=>`M${r1(x-.1*r)},${r1(y+.02*r)} Q${r1(x+.04*r)},${r1(y+.05*r)} ${r1(x+.14*r)},${r1(y-.03*r)}`
+};
+head=function(cx,cy,r,mood='curious',look=[0,0],big=false){
+  let h=head0(cx,cy,r,mood,look,big); if(window.NO_MOUTH) return h;
+  const x=cx+look[0]*r*.9+.03*r, y=cy+.43*r+look[1]*r*.5;
+  if(mood==='scared') return h+`<ellipse cx="${r1(x)}" cy="${r1(y+.02*r)}" rx="${r1(.09*r)}" ry="${r1(.12*r)}" fill="#3b1212" stroke="${INK}" stroke-width="${r1(.05*r)}"/>`;
+  return h+P(MOUTHS[mood](x,y,r),{w:r1(.06*r)});
+};
+/* seated with knees up (like the reference) for the 'knees' pose */
+const heroSeat2=heroSeat;
+heroSeat=(x,y,s=1,o={})=>{
+  if(o.arms!=='knees') return heroSeat2(x,y,s,o);
+  const legsUp=P('M-30,-50 L40,-190 L100,-6 L128,-4',{w:12})+P('M20,-50 L104,-178 L166,-8 L194,-6',{w:12});
+  const arms=arm('M-52,-214 Q0,-200 44,-186')+arm('M52,-214 Q96,-206 106,-176')+hand(46,-184)+hand(108,-172);
+  return shadow(x+40*s,y+4*s,170*s)+G(G(tunic(74)+legsUp+arms+head(0,-330,100,o.mood||'curious',o.look||[0,0],o.big),{c:o.c||'',st:o.st||''}),{t:`translate(${x},${y}) scale(${s})`});
+};
+/* boulder pile cave: rounded grey stones with light tops and dark gaps */
+function blob(cx,cy,rx,ry,sd){srand(sd);const n=9,pts=[];for(let i=0;i<n;i++){const a=i/n*Math.PI*2,k=.82+rnd()*.3;pts.push([cx+Math.cos(a)*rx*k,cy+Math.sin(a)*ry*k])}
+  let d=`M${r1((pts[0][0]+pts[1][0])/2)},${r1((pts[0][1]+pts[1][1])/2)}`;for(let i=1;i<=n;i++){const p=pts[i%n],q=pts[(i+1)%n];d+=` Q${r1(p[0])},${r1(p[1])} ${r1((p[0]+q[0])/2)},${r1((p[1]+q[1])/2)}`}return d+'Z'}
+function boulderCave(x,y,s=1,sd=1){
+  const B=[[-300,-40,170,120],[-120,-250,190,130],[110,-260,180,140],[300,-60,160,130],[-230,-430,150,110],[20,-470,200,120],[260,-410,150,110],[-420,-200,120,140],[440,-230,110,150]];
+  let g=`<defs><linearGradient id="bG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b9b8b2"/><stop offset=".6" stop-color="#8d8c86"/><stop offset="1" stop-color="#6a6964"/></linearGradient>
+   <radialGradient id="cvG" cx="50%" cy="70%" r="70%"><stop offset="0" stop-color="#3a3632"/><stop offset="1" stop-color="#161412"/></radialGradient></defs>`;
+  g+=`<path d="M-470,40 C-480,-300 -300,-560 0,-560 C300,-560 480,-300 470,40Z" fill="#55534f"/>`;
+  B.forEach(([bx,by,rx,ry],i)=>{const d=blob(bx,by,rx,ry,sd*31+i);g+=`<path d="${d}" fill="url(#bG)" stroke="${INK}" stroke-width="6"/>`+
+    P(`M${bx-rx*.55},${by-ry*.35} q${rx*.4},-${ry*.3} ${rx*.9},-${ry*.05}`,{s:'#d9d8d2',w:7,o:.8})+P(`M${bx-rx*.2},${by+ry*.2} l${rx*.25},${ry*.25} M${bx+rx*.3},${by} l${rx*.15},${ry*.3}`,{s:'#4c4b47',w:3.5})});
+  g+=`<path d="M-200,40 C-210,-190 -100,-300 0,-300 C110,-300 210,-190 200,40Z" fill="url(#cvG)" stroke="${INK}" stroke-width="7"/>`;
+  g+=`<path d="${blob(-380,10,110,60,sd+7)}" fill="url(#bG)" stroke="${INK}" stroke-width="6"/><path d="${blob(380,20,100,55,sd+8)}" fill="url(#bG)" stroke="${INK}" stroke-width="6"/>`;
+  return G(g,{t:`translate(${x},${y}) scale(${s})`});
+}

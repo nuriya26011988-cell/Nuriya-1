@@ -39,6 +39,9 @@ const T3=()=>stormSky()+`<path d="M0,862 C300,846 600,876 960,858 C1300,842 1600
 const TT=[{t:'ЖАҢБЫР ЖАУҒАНДА',fill:'#fff',size:86,y:330},{t:'ЕЖЕЛГІ АДАМДАР',fill:'#ffd23f',size:90,y:470},{t:'НЕ ІСТЕДІ?',fill:'#ff3b30',size:150,y:670}];
 const T4=()=>T1().split('<!--T-->')[0].replace("bust(1420,910,1.1","bust(1560,910,1")+'<!--T-->'+title(TT).replace('<!--T-->','');
 const T5=()=>T2().split('<!--T-->')[0]+'<!--T-->'+title([TT[0],TT[1],{...TT[2],fill:'#ff7a1a'}]).replace('<!--T-->','');
-window.make=i=>{const [bg,tx]=[T1,T2,T3,T4,T5][i]().split('<!--T-->');document.getElementById('out').innerHTML=`<svg class="scn" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">${DEFS2}<filter id="rough"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="2"/><feDisplacementMap in="SourceGraphic" scale="4" xChannelSelector="R" yChannelSelector="G"/></filter><g filter="url(#rough)">${bg}</g>${vignette(.45)}${tx}</svg>`;
+const T6=()=>{window.NO_MOUTH=false;const r=stormSky()+`<path d="M0,862 C300,846 600,876 960,858 C1300,842 1600,868 1920,852 V1080 H0Z" fill="#8a6a45" stroke="${INK}" stroke-width="6"/>`+grass(840,900,500,['#6e6535','#857a40','#5a5230'],12)+
+  boulderCave(1480,940,1.15,3)+heroSeat(1440,1010,1.55,{mood:'worried',arms:'knees',look:[-.1,.05]})+drop(1290,330,1.2)+drop(1660,360,1)+rain(260,{op:.75,d:.5,col:'#dce6f0',w:4})+
+  '<!--T-->'+title(TT).replace('<!--T-->','');window.NO_MOUTH=true;return r};
+window.make=i=>{const [bg,tx]=[T1,T2,T3,T4,T5,T6][i]().split('<!--T-->');document.getElementById('out').innerHTML=`<svg class="scn" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">${DEFS2}<filter id="rough"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="2"/><feDisplacementMap in="SourceGraphic" scale="4" xChannelSelector="R" yChannelSelector="G"/></filter><g filter="url(#rough)">${bg}</g>${vignette(.45)}${tx}</svg>`;
   for(const a of document.getAnimations()){a.pause();a.currentTime=2500}};
 </script></body></html>

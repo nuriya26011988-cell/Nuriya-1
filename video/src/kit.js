@@ -230,7 +230,7 @@ function s4(){
      P('M-62,-14 C-40,-46 40,-46 62,-14 M-44,-30 C-20,-50 20,-50 44,-30',{s:'#8a6a44',w:4})+
      `<ellipse class="glow" style="--d:.9s" cx="0" cy="-20" rx="16" ry="9" fill="#ff7a1a"/>`+smoke(0,-34,3,'#8b8f94',6),{t:'translate(1620,870) scale(1.2)'});
   return `<rect width="1920" height="1080" fill="#cfc7ba"/>${hatch(70,380,1900,40,800,'#a99f90',14)}
-    <ellipse class="glow" cx="1100" cy="760" rx="560" ry="330" fill="#ffd9a0" opacity=".35"/>
+    <ellipse class="glow" cx="1100" cy="760" rx="560" ry="330" fill="url(#glowG)"/>
     <path d="${mouth}" fill="#eef3f7"/>${G(rain(70,{op:.6,d:.55,seed:4}),{clip:'s4m'})}
     <path d="${mouth}" fill="none" stroke="${INK}" stroke-width="7"/>
     <path d="M0,860 C400,850 900,872 1920,856 V1080 H0Z" fill="#ddd5c8" stroke="${INK}" stroke-width="5"/>
@@ -255,7 +255,7 @@ function s5(){
     G(arm('M742,686 Q800,740 770,770')+hand(772,774)+`<path d="M760,752 L792,744 L786,772Z" fill="#8d9096" stroke="${INK}" stroke-width="4" stroke-linejoin="round"/>`,{c:'carve'})+
     P('M806,500 l28,-16 M812,540 l32,0 M806,580 l28,16',{w:5,c:'glow',st:'--d:1s'});
   return `<rect width="1920" height="1080" fill="#d6cfc3"/>${hatch(70,40,1880,40,780,'#b2a899',21)}
-    <ellipse class="glow" cx="1320" cy="780" rx="620" ry="380" fill="#ffd9a0" opacity=".35"/>
+    <ellipse class="glow" cx="1320" cy="780" rx="620" ry="380" fill="url(#glowG)"/>
     <path d="M0,880 C500,870 1100,888 1920,872 V1080 H0Z" fill="#e2dbcf" stroke="${INK}" stroke-width="5"/>
     <defs><clipPath id="s5mat"><path d="${matD}"/></clipPath></defs>
     <path d="${matD}" fill="#c9c06e"/>
@@ -319,7 +319,7 @@ function s7(){
      G(arm('M-52,-214 Q-120,-190 -170,-215')+hand(-175,-218),{c:'gest',st:'transform-origin:100% 50%;--r:8deg;--d:1.6s'}),{t:'translate(1360,940) scale(.95)'});
   return `<rect width="1920" height="1080" fill="#fdfaf5"/>
     <path d="M0,0 H1920 V1080 H1800 C1800,600 1600,180 960,170 C320,180 120,600 120,1080 H0Z" fill="#c9c1b4" stroke="${INK}" stroke-width="7"/>
-    <ellipse class="glow" cx="960" cy="860" rx="720" ry="330" fill="#ffdca8" opacity=".5"/>
+    <ellipse class="glow" cx="960" cy="860" rx="720" ry="330" fill="url(#glowG)"/>
     <path d="M120,1000 C600,980 1300,990 1800,1000 V1080 H120Z" fill="#e8dfd0"/>
     ${L.map(a=>lis(...a)).join('')}
     ${fire(960,930,1.1)}

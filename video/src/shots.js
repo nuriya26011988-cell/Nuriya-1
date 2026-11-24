@@ -12,8 +12,9 @@ function sfx(x,y,txt,o={}){return G(`<text x="0" y="0" font-family="${SFX_FONT}"
 function big(x,y,txt,o={}){return `<text x="${x}" y="${y}" font-family="${SFX_FONT}" font-weight="700" font-size="${o.size||120}" fill="${o.fill||'#161616'}" text-anchor="${o.anchor||'middle'}" letter-spacing="${o.ls??3}"${o.c?` class="${o.c}"`:''} style="--w:${o.w||0}s">${txt}</text>`}
 const vgrad=(id,a,b)=>`<linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient>`;
 const vignette=(op=.55)=>`<defs><radialGradient id="vg" cx="50%" cy="50%" r="75%"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="${op}"/></radialGradient></defs><rect width="1920" height="1080" fill="url(#vg)" pointer-events="none"/>`;
-const stormSky=()=>`<defs>${vgrad('sky',C.sky1,C.sky2)}</defs><rect width="1920" height="1080" fill="url(#sky)"/>`+
-  cloud(200,60,1.7,'#59636e','drift','--a:50px;--d:9s')+cloud(760,30,2,'#4c5661','drift','--a:-40px;--d:11s')+cloud(1350,70,1.8,'#5a646f','drift','--a:40px;--d:10s')+cloud(1850,40,1.6,'#505a65','drift','--a:-30px;--d:12s');
+const stormSky=()=>`<defs>${vgrad('sky','#26313f','#6f7c89')}</defs><rect width="1920" height="1080" fill="url(#sky)"/>`+
+  cloud(500,220,2.4,'#56616d','drift','--a:-30px;--d:14s')+cloud(1500,240,2.2,'#56616d','drift','--a:30px;--d:15s')+
+  cloud(200,60,1.7,'url(#cloudG)','drift','--a:50px;--d:9s')+cloud(760,30,2,'url(#cloudG)','drift','--a:-40px;--d:11s')+cloud(1350,70,1.8,'url(#cloudG)','drift','--a:40px;--d:10s')+cloud(1850,40,1.6,'url(#cloudG)','drift','--a:-30px;--d:12s');
 
 /* ---------- hero poses ---------- */
 const ARMS={
@@ -55,7 +56,8 @@ function leopard(x,y,s=1,o={}){
     `<ellipse cx="20" cy="-130" rx="190" ry="66" fill="${C.leo}" stroke="${INK}" stroke-width="7"/>`+P(spots,{s:'#4b3420',w:5})+near+headG,
     {t:`translate(${x},${y}) scale(${o.flip?-s:s},${s})`});
 }
-const rockFloor=(y=880,fill=C.rockD)=>`<path d="M0,${y} C400,${y-12} 1000,${y+14} 1920,${y-6} V1080 H0Z" fill="${fill}" stroke="${INK}" stroke-width="6"/>`;
+const rockFloor=(y=880,fill=C.rockD)=>`<path d="M0,${y} C400,${y-12} 1000,${y+14} 1920,${y-6} V1080 H0Z" fill="${fill}" stroke="${INK}" stroke-width="6"/>`+pebbles(y);
+function pebbles(y){srand(y);let g='';for(let i=0;i<34;i++){const x=r1(rnd()*1920),yy=r1(y+20+Math.pow(rnd(),.7)*(1060-y)),r=r1(6+rnd()*18*(yy-y)/200+4);g+=`<ellipse cx="${x}" cy="${yy}" rx="${r}" ry="${r1(r*.55)}" fill="url(#stoneG)" stroke="#1d1a17" stroke-width="2.5" opacity=".9"/>`}return g+hatch(30,0,1920,y+10,1080,'#1f1b18',y+3)}
 function caveInterior(mouthD,o={}){ // dark cave seen from inside with a rainy opening
   return `<rect width="1920" height="1080" fill="${o.wall||C.rock}"/>`+hatch(90,0,1920,0,1000,'#4b443e',o.seed||5)+
    `<path d="${mouthD}" fill="${o.out||'#6e8193'}"/>`+`<clipPath id="mouth"><path d="${mouthD}"/></clipPath>`+
@@ -82,16 +84,16 @@ function steppe(o={}){
   const h=G(legs()+G(arm('M-52,-288 Q-85,-262 -91,-212')+spear(-120,90,-62,-520)+hand(-91,-212)+tunic()+hunger+head(0,-410,105,o.mood||'focus',[.12,.12])+arm('M52,-288 Q102,-240 112,-182')+hand(114,-174),{t:'rotate(18 0 -126)'}),{t:'translate(430,880)'});
   return `<defs>${vgrad('sk','#bcd6e6','#eef4ec')}</defs><rect width="1920" height="1080" fill="url(#sk)"/>`+
    `<circle cx="300" cy="170" r="70" fill="#f6dc7a" opacity=".8"/>`+
-   `<path d="M1020,800 C1180,560 1480,540 1700,640 C1800,690 1880,760 1920,790 V900 H1020Z" fill="#b99450" stroke="${INK}" stroke-width="6"/>`+
+   `<path d="M1020,800 C1180,560 1480,540 1700,640 C1800,690 1880,760 1920,790 V900 H1020Z" fill="#b99450" stroke="${INK}" stroke-width="6"/>`+G(grass(600,900,500,['#a6823a','#c09a4c','#8f6f30'],4),{clip:'hillC'})+`<clipPath id="hillC"><path d="M1020,800 C1180,560 1480,540 1700,640 C1800,690 1880,760 1920,790 V900 H1020Z"/></clipPath>`+
    G(G(herd,{c:'drift',st:'--a:-34px;--d:14s'}),{})+
    `<path d="M0,862 C300,846 600,876 960,858 C1300,842 1600,868 1920,852 V1080 H0Z" fill="${C.ground}" stroke="${INK}" stroke-width="6"/>`+
-   tufts+tr+h+(o.sfx?sfx(560,560,'ШҰРЫЛ-ШҰРЫЛ…',{size:60,fill:'#fff3d6',stroke:'#5a3a1e',rot:-8,w:.6}):'');
+   grass(850,1090,1400)+tufts+tr+h+(o.sfx?sfx(560,560,'ШҰРЫЛ-ШҰРЫЛ…',{size:60,fill:'#fff3d6',stroke:'#5a3a1e',rot:-8,w:.6}):'');
 }
 SC.hungry=()=>steppe({sfx:1});
 SC.steppe=()=>steppe();
 
 function storm(o={}){
-  let g=stormSky()+`<path d="M0,862 C300,846 600,876 960,858 C1300,842 1600,868 1920,852 V1080 H0Z" fill="${C.groundW}" stroke="${INK}" stroke-width="6"/>`;
+  let g=stormSky()+`<path d="M0,862 C300,846 600,876 960,858 C1300,842 1600,868 1920,852 V1080 H0Z" fill="${C.groundW}" stroke="${INK}" stroke-width="6"/>`+grass(850,1090,1100,['#6e6535','#857a40','#5a5230','#9a8c4c'],12);
   [[520,980,110],[1450,1010,140],[1040,1045,80]].forEach(([x,y,rx],i)=>g+=`<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${r1(rx*.2)}" fill="${C.waterL}" stroke="${INK}" stroke-width="4"/><ellipse class="ripple" style="--w:${i*.5}s" cx="${x-20}" cy="${y}" rx="${r1(rx*.35)}" ry="${r1(rx*.08)}" fill="none" stroke="#e8f1f8" stroke-width="3"/>`);
   if(o.flash)g+=`<rect class="flash" width="1920" height="1080" fill="#fff"/>`+P('M1500,0 L1440,160 L1490,170 L1400,360',{s:'#fff6b0',w:12,c:'flash'});
   g+=hero(960,905,1,{mood:'worried',arms:'cross',look:[0,-.12],c:o.hard?'shiver-hard':'shiver'});
@@ -127,7 +129,7 @@ SC.river=()=>{let g=stormSky()+`<path d="M0,700 C400,690 800,720 1200,700 C1500,
   g+=hero(420,700,.55,{mood:'scared',arms:'shrug',big:1})+sfx(1100,450,'ӨЗЕН ТАСЫДЫ',{size:96,w:.8});
   return g+rain(200,{op:.65,d:.45,col:C.rainD})+vignette(.45)};
 SC.dyingFire=()=>caveInterior('M1500,0 C1560,200 1700,260 1920,240 V0Z')+rockFloor(860)+
-  `<ellipse class="glow" cx="960" cy="820" rx="520" ry="260" fill="#ffb347" opacity=".25"/>`+G(fire(960,880,1.5),{c:'dying'})+smoke(960,700,4,'#9aa0a6',9)+
+  `<ellipse class="glow" cx="960" cy="820" rx="520" ry="260" fill="url(#glowG)"/>`+G(fire(960,880,1.5),{c:'dying'})+smoke(960,700,4,'#9aa0a6',9)+
   heroSeat(1380,900,.95,{mood:'worried',arms:'knees',look:[-.15,.1],c:'shiver'})+sfx(620,420,'тыс-с-с…',{size:70,w:2.5,fill:'#ffd9a8',stroke:'#3d2a1a'})+vignette(.7);
 SC.trapped=()=>caveInterior('M900,880 C860,560 1000,240 1320,220 C1640,200 1820,520 1840,880Z',{seed:9})+rockFloor(880)+
   heroSeat(640,900,1,{mood:'worried',arms:'knees',look:[.18,0]})+
@@ -219,7 +221,7 @@ SC.skull=()=>`<rect width="1920" height="1080" fill="#fff"/>`+
   P('M430,310 C800,200 1200,300 1500,370',{s:C.red,w:5,c:'draw',st:'stroke-dasharray:14 12;--w:1.6s'})+P('M495,280 C800,180 1200,260 1560,380',{s:C.red,w:5,c:'draw',st:'--w:1.8s'})+
   T(380,230,'тіс іздері',{size:52,fill:C.red,c:'fade',st:'--w:1.2s'})+big(960,940,'ДӘЛ СӘЙКЕС.',{size:120,c:'pop',w:2.4});
 SC.faceoff=()=>caveInterior('M0,0 H600 C500,200 300,260 0,240Z',{seed:13})+rockFloor(900)+
-  `<ellipse class="glow" cx="960" cy="800" rx="700" ry="300" fill="#e0b070" opacity=".18"/>`+
+  `<ellipse class="glow" cx="960" cy="800" rx="700" ry="300" fill="url(#glowG)"/>`+
   hero(560,920,1,{mood:'scared',arms:'shrug',big:1,c:'shiver'})+leopard(1340,930,1.05,{flip:0,fangs:1})+
   sfx(960,240,'БЕТПЕ-БЕТ!',{size:110,w:.6,fill:'#ffe0a0',stroke:'#2b1c10'})+sfx(1150,640,'ырррр',{size:60,w:1.2})+vignette(.6);
 SC.task=()=>`<rect width="1920" height="1080" fill="#fff"/>`+big(960,180,'№1 МІНДЕТ',{size:110,c:'fade'})+fire(960,690,1.3)+big(960,870,'ОТТЫ ӨШІРМЕУ',{size:110,fill:'#b8460f',c:'pop',w:.8});
@@ -243,32 +245,32 @@ SC.fungusTree=()=>`<defs>${vgrad('fg','#6e7a6a','#a9b39d')}</defs><rect width="1
   `<rect x="760" y="0" width="360" height="1080" fill="#6b4a2e" stroke="${INK}" stroke-width="9"/>`+P('M800,0 V1080 M880,100 V900 M1040,0 V700 M960,300 V1080',{s:'#4f361f',w:6})+
   [[1120,380,1.6,0],[1120,560,1.2,.3],[760,700,1.4,.6]].map(([x,y,s,w],i)=>G(G(`<path d="M0,-60 C${i==2?-180:180},-60 ${i==2?-200:200},20 0,30Z" fill="#c9a27a" stroke="${INK}" stroke-width="6"/>`+P(i==2?'M-20,-30 C-90,-30 -120,0 -140,10':'M20,-30 C90,-30 120,0 140,10',{s:'#8a6a44',w:4}),{c:'popb',st:`--w:${w}s`}),{t:`translate(${x},${y}) scale(${s})`})).join('')+
   hero(1500,960,.8,{mood:'curious',arms:'point',look:[-.2,-.1],flip:1})+sfx(560,300,'ҚУ САҢЫРАУҚҰЛАҚ',{size:80,w:1.2})+rain(90,{op:.4,d:.5,col:'#e5ece4'});
-SC.ember=()=>`<rect width="1920" height="1080" fill="#2a2420"/>`+`<ellipse class="glow" cx="960" cy="640" rx="520" ry="300" fill="#ff8a2a" opacity=".22"/>`+
+SC.ember=()=>`<rect width="1920" height="1080" fill="#2a2420"/>`+`<ellipse class="glow" cx="960" cy="640" rx="520" ry="300" fill="url(#glowG)"/>`+
   G(`<path d="M-320,0 C-330,-260 330,-260 320,0 C160,40 -160,40 -320,0Z" fill="#c9a27a" stroke="${INK}" stroke-width="9"/>`+P('M-260,-40 C-170,-170 170,-170 260,-40 M-180,-90 C-80,-170 80,-170 180,-90',{s:'#8a6a44',w:6})+
    `<ellipse cx="0" cy="-60" rx="110" ry="50" fill="#3a2a1d" stroke="${INK}" stroke-width="5"/><ellipse class="glow" style="--d:.7s" cx="0" cy="-64" rx="70" ry="30" fill="#ff6a12"/><ellipse class="glow" style="--d:.5s" cx="-20" cy="-66" rx="30" ry="14" fill="#ffd36b"/>`,{t:'translate(960,760)'})+
   smoke(960,680,5,'#a5a9ad',12)+big(960,220,'«ТАБИҒИ ОТТЫҚ»',{size:110,fill:'#ffd9a8',c:'fade',w:.6})+sfx(1460,560,'сағаттап бықсиды',{size:60,w:1.6})+vignette(.6);
 SC.shield=()=>{const mouth='M0,180 C140,150 330,230 360,480 C380,650 340,800 300,860 L0,860Z';
-  return caveInterior(mouth,{seed:4})+`<ellipse class="glow" cx="1100" cy="760" rx="560" ry="330" fill="#ffb347" opacity=".3"/>`+rockFloor(856,'#4a433d')+
+  return caveInterior(mouth,{seed:4})+`<ellipse class="glow" cx="1100" cy="760" rx="560" ry="330" fill="url(#glowG)"/>`+rockFloor(856,'#4a433d')+
    [[120,420,0],[60,560,.6],[160,680,1.1],[90,330,1.5]].map(([x,y,w])=>`<path class="gust" style="--w:${w}s" d="M${x},${y} q60,-22 120,0 t120,0 q30,-10 22,-34" fill="none" stroke="#c7d3de" stroke-width="7" stroke-linecap="round"/>`).join('')+
    fire(1080,870,1.05,'fight')+
    G(G(`<path d="M1160,485 C1040,420 900,470 850,600 C820,690 840,800 880,855 L935,852 C905,780 905,690 940,630 C990,560 1060,580 1118,610Z" fill="${FUR}" stroke="${INK}" stroke-width="7" stroke-linejoin="round"/>`+P('M900,560 l10,12 M880,660 l10,12 M890,760 l10,12 M960,520 l10,12 M1040,500 l10,12',{s:FURD,w:4}),{c:'billow'}),{c:'raise'})+
    G(legs()+G(arm('M52,-288 Q-20,-380 -120,-430')+hand(-120,-430)+tunic()+head(0,-410,105,'focus',[-.16,.04])+arm('M-52,-288 Q-130,-300 -190,-330')+hand(-190,-330),{t:'rotate(-15 0 -126)'}),{t:'translate(1350,880)'})+
-   person(1700,880,.8,{arms:'cross'})+sfx(1640,300,'кезектесіп күзетеміз',{size:56,w:1.4})+vignette(.6)};
+   person(1700,880,.8,{arms:'cross'})+sfx(1480,300,'кезектесіп күзетеміз',{size:56,w:1.4})+vignette(.6)};
 SC.fire4=()=>`<rect width="1920" height="1080" fill="#fff"/>`+fire(960,680,1.3)+
   [['ЖЫЛУ',480,330,.4],['ЖАРЫҚ',1440,330,.9],['АС',480,860,1.4],['ҚАУІПСІЗДІК',1440,860,1.9]].map(([t,x,y,w])=>G(big(x,y,t,{size:96})+arrow(x+(x<960?150:-150),y-30,(x+960)/2,(y+560)/2-60,x<960?820:1100,y<500?520:640,{s:'#b8460f',w:6}),{c:'pop',st:`--w:${w}s`})).join('');
 SC.question=()=>caveInterior('M1180,880 C1150,560 1280,260 1560,240 C1820,220 1900,520 1920,880Z',{seed:21})+rockFloor(880,'#4a433d')+
-  `<ellipse class="glow" cx="700" cy="800" rx="520" ry="280" fill="#ffb347" opacity=".3"/>`+fire(880,890,.9)+
+  `<ellipse class="glow" cx="700" cy="800" rx="520" ry="280" fill="url(#glowG)"/>`+fire(880,890,.9)+
   heroSeat(520,900,1,{mood:'curious',arms:'knees',look:[.22,0]})+big(520,420,'?',{size:220,fill:C.red,c:'pop',w:1})+vignette(.6);
 SC.idea=()=>`<rect width="1920" height="1080" fill="#fff8e6"/>`+
   G(P(Array.from({length:16},(_,i)=>{const a=i*Math.PI/8;return `M${r1(960+Math.cos(a)*230)},${r1(470+Math.sin(a)*230)} L${r1(960+Math.cos(a)*420)},${r1(470+Math.sin(a)*420)}`}).join(' '),{s:'#f2b630',w:14}),{c:'sunrays'})+
   hero(960,980,1,{mood:'happy',arms:'up',look:[0,-.05]})+big(1170,330,'!',{size:220,fill:C.red,c:'pop',w:.4})+big(960,150,'ӨНЕРТАБЫС УАҚЫТЫ',{size:96,c:'fade',w:.8});
-SC.carve=()=>{const s=s5();return s.replace('<rect width="1920" height="1080" fill="#d6cfc3"/>',`<rect width="1920" height="1080" fill="#5c544c"/>`)+vignette(.55)};
+SC.carve=()=>{const s=s5();return s.replace('<rect width="1920" height="1080" fill="#d6cfc3"/>',`<rect width="1920" height="1080" fill="#4f4741"/>`).replace('fill="#e2dbcf"','fill="#3d3732"').replace(/fill="#161616" font-size/g,'fill="#f3e3c3" font-size')+vignette(.55)};
 SC.needle=()=>`<rect width="1920" height="1080" fill="#fff"/>`+big(960,200,'СҮЙЕК ИНЕ',{size:110,c:'fade'})+
   G(`<path d="M-600,40 L560,-20 L600,0 L560,20 L-600,80 C-640,80 -650,40 -600,40Z" fill="#f4ecd8" stroke="${INK}" stroke-width="8" stroke-linejoin="round"/><ellipse cx="-560" cy="60" rx="22" ry="9" fill="${INK}"/>`,{t:'translate(960,560)',c:'pop',st:'--w:.4s'})+
   big(960,820,'тек тыныш отырып жасайсың',{size:72,ls:0,fill:'#8b3c14',c:'fade',w:1.2})+
   [[700,580,0],[900,590,.5],[1200,570,1]].map(([x,y,w])=>`<rect class="fall" style="--w:${w}s;--y:160px" x="${x}" y="${y}" width="16" height="8" fill="#efe6d2" stroke="${INK}" stroke-width="2"/>`).join('');
 SC.rope=()=>{const str=(c,ph)=>P(Array.from({length:1},()=>{let d='M200,540';for(let x=200;x<=1720;x+=20)d+=` L${x},${r1(540+Math.sin((x/60)+ph)*36)}`;return d})[0],{s:INK,w:26})+P((()=>{let d='M200,540';for(let x=200;x<=1720;x+=20)d+=` L${x},${r1(540+Math.sin((x/60)+ph)*36)}`;return d})(),{s:c,w:16});
-  return `<rect width="1920" height="1080" fill="#5c544c"/>`+`<ellipse class="glow" cx="960" cy="560" rx="900" ry="380" fill="#ffb347" opacity=".18"/>`+
+  return `<rect width="1920" height="1080" fill="#5c544c"/>`+`<ellipse class="glow" cx="960" cy="560" rx="900" ry="380" fill="url(#glowG)"/>`+
    G(str('#c79a5c',0)+str('#a07a45',Math.PI),{c:'twist'})+hand(200,540,40)+hand(1720,540,40)+
    P('M120,620 C80,700 60,800 100,900 M1800,620 C1840,700 1860,800 1820,900',{s:'#d8b27a',w:8})+
    big(960,240,'ӨСІМДІК ТАЛШЫҒЫ → АРҚАН',{size:92,fill:'#ffe7bf',c:'fade',w:.4})+vignette(.5)};
@@ -281,7 +283,7 @@ SC.mat=()=>{let g=`<rect width="1920" height="1080" fill="#5c544c"/><defs><clipP
   srand(31);for(let i=0;i<14;i++){const x=r1(260+rnd()*1400),y=r1(360+rnd()*520),a=r1(rnd()*180);g+=`<path class="fade" style="--w:${r1(i*.15)}s" transform="translate(${x},${y}) rotate(${a}) scale(3)" d="M-16,0 Q0,-12 16,0 Q0,12 -16,0Z" fill="#6f9a4f" stroke="${INK}" stroke-width="1.5"/>`}
   return g+sfx(960,200,'ШӨП ТӨСЕНІШ + ХОШ ИІСТІ ЖАПЫРАҚ',{size:72,w:.6,fill:'#ffe7bf',stroke:'#2b1c10'})+vignette(.45)};
 SC.n77=()=>`<rect width="1920" height="1080" fill="#fff"/>`+big(960,500,'77 000',{size:280,c:'pop'})+big(960,650,'ЖЫЛ БҰРЫН',{size:110,c:'fade',w:.5})+big(960,860,'адамдар үйін таза ұстаған',{size:70,ls:0,fill:'#5b6526',c:'fade',w:1.1});
-SC.art=()=>`<rect width="1920" height="1080" fill="#2a241f"/>`+`<ellipse class="glow" cx="960" cy="560" rx="1300" ry="800" fill="#d98b3a" opacity=".1"/>`+
+SC.art=()=>`<rect width="1920" height="1080" fill="#2a241f"/>`+`<ellipse class="glow" cx="960" cy="560" rx="1300" ry="800" fill="url(#glowG)"/>`+
   big(960,600,'ӨНЕРДІҢ ТУУЫ',{size:170,fill:'#e7b56d',c:'pop',w:.3})+G(P('M-60,-40 l-30,-90 M-20,-60 l-8,-120 M20,-62 l12,-122 M56,-50 l32,-104 M70,20 l80,-28',{s:'#b53b22',w:34})+`<ellipse cx="0" cy="0" rx="70" ry="78" fill="#b53b22"/>`,{t:'translate(1640,260) rotate(12) scale(.9)',c:'fade',st:'--w:.9s',o:.8});
 SC.maps=()=>`<rect width="1920" height="1080" fill="#a9d2ea"/>`+
   G(`<path d="M300,40 L420,90 L480,200 L430,330 L330,380 L200,360 L130,300 L150,190 L60,140 L170,110 L240,60Z" fill="#e9cf8f" stroke="${INK}" stroke-width="7" stroke-linejoin="round"/>`+
@@ -293,7 +295,7 @@ SC.wall=()=>{const s=s6();return s};
 SC.paintings=()=>{const ochre='#c56d26',red='#9e3220';
   const horse='M80,135 C150,105 260,110 325,108 C360,100 378,62 398,38 C412,26 428,34 432,48 L462,96 C464,108 446,114 436,104 C420,96 406,98 398,114 C388,138 380,160 362,176 C320,200 220,205 150,190 C115,182 90,165 80,135Z';
   const bear='M0,120 C10,60 60,30 120,30 C170,20 220,40 250,80 L280,90 L270,110 L240,110 C230,140 230,160 220,180 L200,180 L195,140 C150,150 100,150 60,140 L50,180 L30,180 C25,150 5,140 0,120Z';
-  return `<rect width="1920" height="1080" fill="#5a4636"/>`+hatch(120,0,1920,0,1080,'#4a382a',44)+`<ellipse class="glow" cx="960" cy="560" rx="900" ry="460" fill="#ffc06a" opacity=".22"/>`+
+  return `<rect width="1920" height="1080" fill="#5a4636"/>`+hatch(120,0,1920,0,1080,'#4a382a',44)+`<ellipse class="glow" cx="960" cy="560" rx="900" ry="460" fill="url(#glowG)"/>`+
    G(`<path d="${horse}" fill="${ochre}" opacity=".85" stroke="#2a1a10" stroke-width="7" class="fade"/>`+P('M352,180 C382,205 412,220 448,232 M330,188 C350,220 360,250 352,284 M150,190 C120,220 90,240 50,252 M172,192 C172,230 182,262 198,294 M82,132 C50,130 30,150 20,188',{s:'#2a1a10',w:9,c:'draw',st:'--w:.4s'}),{t:'translate(120,180) scale(1.3)'})+
    G(`<path d="M40,120 C80,95 200,95 260,110 C285,118 300,140 296,170 C290,200 250,205 200,200 C150,198 90,200 60,180 C40,165 34,140 40,120Z" fill="#d9a441" opacity=".85" stroke="#2a1a10" stroke-width="7" class="fade" style="--w:.9s"/>`+
      P(Array.from({length:17},(_,i)=>{const a=i/16*Math.PI*2,rr=i%2?44:66;return `${i?'L':'M'}${r1(40+Math.cos(a)*rr)},${r1(96+Math.sin(a)*rr)}`}).join(' ')+'Z',{s:'#2a1a10',w:8,f:'#9e5a20',c:'fade',st:'--w:.9s'})+
@@ -311,7 +313,19 @@ SC.chat=()=>`<defs>${vgrad('ch','#8a949d','#b9c1c7')}</defs><rect width="1920" h
   G(`<ellipse cx="0" cy="0" rx="90" ry="60" fill="#fff" stroke="${INK}" stroke-width="6"/>`+T(0,16,'…',{size:70,anchor:'middle'}),{t:'translate(1160,300)',c:'pop',st:'--w:.5s'})+
   G(`<ellipse cx="0" cy="0" rx="90" ry="60" fill="#fff" stroke="${INK}" stroke-width="6"/>`+T(0,18,'?!',{size:60,anchor:'middle',fill:C.red}),{t:'translate(720,330)',c:'pop',st:'--w:1.1s'})+vignette(.45);
 function caveFrame(){return `<path d="M0,0 H1920 V1080 H1800 C1800,600 1600,180 960,170 C320,180 120,600 120,1080 H0Z" fill="${C.rock}" stroke="${INK}" stroke-width="8"/>`+hatch(50,0,1920,0,500,'#4b443e',19)}
-SC.fireside=()=>{const s=s7();return s.replace('<rect width="1920" height="1080" fill="#fdfaf5"/>',`<rect width="1920" height="1080" fill="#3a3430"/>`).replace('fill="#c9c1b4"',`fill="${C.rock}"`).replace('fill="#ffdca8" opacity=".5"','fill="#ffb347" opacity=".35"').replace('fill="#e8dfd0"','fill="#4a433d"')+vignette(.5)};
+SC.fireside=()=>{const L=[[560,960,.78,0],[700,830,.62,.4],[860,770,.52,.9],[1070,770,.52,.2],[1215,820,.6,.7]];
+  const ps=(x,y,s,w)=>shadow(x,y+4*s,140*s)+G(G(seatedLegs()+tunic(74)+arm('M-52,-214 Q-80,-150 -40,-110')+hand(-38,-106)+arm('M52,-214 Q80,-150 40,-110')+hand(38,-106)+
+     `<circle cx="0" cy="-330" r="95" fill="#d8d2c6" stroke="${INK}" stroke-width="8"/><ellipse cx="${x<960?22:-22}" cy="-322" rx="7" ry="12" fill="${INK}"/><ellipse cx="${x<960?52:8}" cy="-322" rx="7" ry="12" fill="${INK}"/>`,{c:'bob',st:`--d:2.2s;--w:${w}s;--a:-5px`}),{t:`translate(${x},${y}) scale(${s})`});
+  const heads=L.map(([x,y,s])=>[x,y-330*s]);
+  const net=heads.map(([x,y],i)=>P(`M1360,620 L${r1(x)},${r1(y)}`,{s:'#ffb347',w:4,c:'draw',st:`--d:.8s;--w:${r1(3.4+i*.25)}s`})).join('');
+  const icons=[G(saiga(),{t:'scale(1.5) translate(10,40)'}),P('M0,60 V-20 M0,20 C-40,10 -60,-20 -50,-50 C-20,-40 -5,-10 0,20 M0,0 C40,-10 60,-40 50,-70 C20,-60 5,-30 0,0',{w:6,s:'#2f6b2f'})+T(60,10,'улы',{size:44,fill:'#b53b22'}),
+    `<path d="M0,-70 C30,-30 46,0 46,22 C46,50 24,68 0,68 C-24,68 -46,50 -46,22 C-46,0 -30,-30 0,-70Z" fill="#7fb3e0" stroke="${INK}" stroke-width="6"/>`+T(60,20,'су',{size:46,fill:'#2f6f9f'}),
+    spear(-90,60,60,-50)+G(saiga(),{t:'translate(110,60) scale(.7)'}),`<circle cx="0" cy="0" r="44" fill="#ffd23f" stroke="${INK}" stroke-width="6"/>`+T(80,16,'аңыз',{size:44})].map((g,i)=>G(G(g,{c:'cycle',st:`--w:${i*2}s`}),{t:'translate(1385,250)'})).join('');
+  const main=heroSeat(1360,940,.95,{mood:'happy',look:[-.16,0]}).replace('</g></g>','</g></g>')+G(G(arm('M52,-214 Q120,-250 150,-330')+hand(152,-334),{c:'gest',st:'transform-origin:0 100%;--r:-24deg'}),{t:'translate(1360,940) scale(.95)'});
+  return caveInterior('M760,40 C860,10 1060,10 1160,40 C1120,90 800,90 760,40Z',{seed:23})+rockFloor(900,'#3f3934')+fire(960,940,1.1)+
+    L.map(a=>ps(...a)).join('')+net+main+`<path d="${CLOUD}" transform="translate(1385,250) scale(1.15)" fill="#fff" stroke="${INK}" stroke-width="5"/>`+
+    `<circle cx="1330" cy="480" r="16" fill="#fff" stroke="${INK}" stroke-width="5"/><circle cx="1352" cy="420" r="24" fill="#fff" stroke="${INK}" stroke-width="5"/>`+icons+
+    sfx(420,200,'алғашқы «әлеуметтік желі»',{size:60,w:3.6,fill:'#ffe0a8',stroke:'#3d2a1a'})+vignette(.55)};
 SC.lessons=()=>`<rect width="1920" height="1080" fill="#fff"/>`+
   [['ҚАЙ ШӨП УЛЫ?','#f7e7a1',360,-4,.2,P('M0,90 V-10 M0,40 C-50,30 -70,0 -60,-40 C-25,-30 -5,0 0,40',{w:7,s:'#2f6b2f'})],
    ['СУ ҚАЙДА?','#d6e8f7',960,3,1,`<path d="M0,-50 C30,-10 46,20 46,42 C46,70 24,88 0,88 C-24,88 -46,70 -46,42 C-46,20 -30,-10 0,-50Z" fill="#7fb3e0" stroke="${INK}" stroke-width="6"/>`],

@@ -147,7 +147,7 @@ function room(o={}){
   if(o.sleep){
     g+=`<path d="M620,720 C700,640 1000,640 1240,700 L1260,800 L620,800Z" fill="${C.blanket}" stroke="${INK}" stroke-width="8"/>`+
      `<circle cx="680" cy="640" r="95" fill="#fff" stroke="${INK}" stroke-width="7"/>`+P('M630,650 q15,12 30,0 M700,650 q15,12 30,0 M620,600 q22,-14 44,-4 M696,596 q22,-10 44,4',{w:7})+
-     sfx(820,470,'Zzz…',{size:90,w:.6,fill:'#fff',stroke:'#3a4b62'})+sfx(450,640,'тырс-тырс',{size:56,w:1.2});
+     sfx(820,470,'ҚОР-Р-Р…',{size:90,w:.6,fill:'#fff',stroke:'#3a4b62'})+sfx(450,640,'тырс-тырс',{size:56,w:1.2});
   } else {
     g+=`<path d="M870,590 Q960,566 1050,590 L1080,800 L840,800Z" fill="#c8553d" stroke="${INK}" stroke-width="7"/>`+
      `<path d="M840,620 C780,700 780,800 810,840 L1110,840 C1130,780 1110,690 1070,640 C1020,700 910,710 840,620Z" fill="${C.blanket}" stroke="${INK}" stroke-width="7"/>`+

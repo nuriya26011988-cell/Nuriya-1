@@ -10,10 +10,15 @@ const TF="Montserrat, 'Arial Black', sans-serif";
 function title(lines){ // [{t,fill,size,y}]
   return '<!--T-->'+lines.map(l=>`<text x="${l.x||70}" y="${l.y}" font-family="${TF}" font-weight="900" font-size="${l.size}" fill="${l.fill}" stroke="#000" stroke-width="${l.size*.16}" paint-order="stroke" stroke-linejoin="round" transform="rotate(${l.rot||-3} ${l.x||70} ${l.y})" style="filter:drop-shadow(6px 8px 0 rgba(0,0,0,.55))">${l.t}</text>`).join('');
 }
+const MOUTH={ // local to bust: head centre (0,-330), r 240
+  scared:`<path d="M-58,-232 C-58,-300 58,-300 58,-232 C58,-170 -58,-170 -58,-232Z" fill="#3b1212" stroke="${INK}" stroke-width="14"/><path d="M-34,-196 C-20,-222 20,-222 34,-196 C20,-186 -20,-186 -34,-196Z" fill="#e2574c"/><path d="M-40,-268 H40" stroke="#fff" stroke-width="12" stroke-linecap="round"/>`,
+  worried:P('M-56,-212 q14,-18 28,0 t28,0 t28,0 t28,0',{w:14}),
+  focus:P('M-40,-216 L44,-226',{w:15})
+};
 function bust(x,y,s,mood,look,extra=''){ // big hero close-up: shoulders in fur + head
   return G(`<path d="M-260,120 C-250,-60 -150,-120 0,-120 C150,-120 250,-60 260,120Z" fill="url(#furG)" stroke="${INK}" stroke-width="10"/>`+
     P('M-200,60 l10,24 M-120,0 l10,24 M-40,-60 l10,24 M60,-40 l10,24 M150,20 l10,24 M-150,-60 l10,24 M200,90 l8,20',{s:'#5e3b1d',w:6})+
-    head(0,-330,240,mood,look,true)+extra,{t:`translate(${x},${y}) scale(${s})`});
+    head(0,-330,240,mood,look,true)+G(MOUTH[mood]||'',{t:`translate(${look[0]*240},${mood==='scared'?30:45})`})+extra,{t:`translate(${x},${y}) scale(${s})`});
 }
 const drop=(x,y,s=1,c='#6ec3ff')=>`<path d="M${x},${y} q-${22*s},${40*s} 0,${52*s} q${22*s},-${12*s} 0,-${52*s}Z" fill="${c}" stroke="#000" stroke-width="${5*s}"/>`;
 const T1=()=>caveInterior('M0,0 H760 C700,260 520,420 0,430Z',{seed:31})+rockFloor(980,'#3a3430')+

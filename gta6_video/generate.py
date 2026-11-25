@@ -97,13 +97,12 @@ def face(expr, dy=0, op=1):
         e += f'<path d="M-50,-34 Q-34,-54 -14,-42" {br}/><path d="M14,-40 Q32,-50 50,-36" {br}/>'
     # mouth
     if expr == "wow":
-        e += f'<ellipse cx="6" cy="30" rx="12" ry="15" fill="{INK}"/>'
+        e += f'<ellipse cx="0" cy="30" rx="12" ry="15" fill="{INK}"/>'
     elif expr == "grin":
-        e += f'<path d="M-30,16 Q8,56 44,12 Q8,28 -30,16 Z" fill="{INK}"/>'
-        e += '<path d="M-12,36 Q8,46 26,34 Q8,32 -12,36 Z" fill="#d9534f"/>'
+        e += f'<path d="M-34,14 Q0,58 34,14 Q0,28 -34,14 Z" fill="{INK}"/>'
+        e += '<path d="M-16,36 Q0,46 16,36 Q0,32 -16,36 Z" fill="#d9534f"/>'
     else:
-        e += f'<path d="M-20,24 Q14,44 46,14" stroke="{INK}" stroke-width="7" fill="none" stroke-linecap="round"/>'
-        e += f'<path d="M42,6 Q52,10 52,20" stroke="{INK}" stroke-width="6" fill="none" stroke-linecap="round"/>'
+        e += f'<path d="M-30,18 Q0,48 30,18" stroke="{INK}" stroke-width="7" fill="none" stroke-linecap="round"/>'
     return e + '</g>'
 
 

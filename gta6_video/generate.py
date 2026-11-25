@@ -28,8 +28,10 @@ def hand(x, y, r=13, fill="#ffffff"):
 
 
 def thumbs_up(x, y):
-    return (f'<rect x="{x-14}" y="{y-10}" width="28" height="24" rx="9" fill="#fff" stroke="{INK}" stroke-width="4"/>'
-            f'<rect x="{x-9}" y="{y-34}" width="11" height="28" rx="5.5" fill="#fff" stroke="{INK}" stroke-width="4"/>')
+    st = f'fill="#fff" stroke="{INK}" stroke-width="4.5"'
+    return (f'<g transform="translate({x},{y}) scale(1.3) translate({-x},{-y})"><rect x="{x-6}" y="{y-40}" width="14" height="34" rx="7" {st}/>'
+            f'<rect x="{x-18}" y="{y-12}" width="36" height="32" rx="11" {st}/>'
+            f'<path d="M{x-14},{y-2} h26 M{x-14},{y+8} h26" stroke="{INK}" stroke-width="3"/></g>')
 
 
 def text(x, y, s, size=40, fill="#f3e6c8", weight="bold", anchor="middle", extra=""):
@@ -77,93 +79,130 @@ def svg(body, title):
 
 # ---------- the channel hero: Зерттеуші Стикмен ----------
 def face(expr, dy=0, op=1):
+    """Face modelled on the channel reference: tall oval eyes, thick
+    asymmetric brows (left one arched higher), sideways smirk."""
     e = f'<g opacity="{op}" transform="translate(0,{dy})">'
+    br = f'stroke="{INK}" stroke-width="8" fill="none" stroke-linecap="round"'
     # eyes
     if expr == "wink":
-        e += f'<ellipse cx="-26" cy="-14" rx="8" ry="11" fill="{INK}"/>'
-        e += f'<path d="M14,-12 Q26,-20 38,-12" stroke="{INK}" stroke-width="5" fill="none" stroke-linecap="round"/>'
+        e += f'<ellipse cx="-28" cy="-10" rx="9" ry="14" fill="{INK}"/>'
+        e += f'<path d="M16,-8 Q30,-18 44,-8" stroke="{INK}" stroke-width="6" fill="none" stroke-linecap="round"/>'
     else:
-        ry = 13 if expr == "wow" else 11
-        e += f'<ellipse cx="-26" cy="-14" rx="8" ry="{ry}" fill="{INK}"/><ellipse cx="26" cy="-14" rx="8" ry="{ry}" fill="{INK}"/>'
+        ry = 16 if expr == "wow" else 14
+        e += f'<ellipse cx="-32" cy="-10" rx="9" ry="{ry}" fill="{INK}"/><ellipse cx="32" cy="-12" rx="9" ry="{ry-1}" fill="{INK}"/>'
     # brows
     if expr == "wow":
-        e += f'<path d="M-44,-44 Q-28,-58 -12,-46" stroke="{INK}" stroke-width="6" fill="none" stroke-linecap="round"/>'
-        e += f'<path d="M12,-46 Q28,-58 44,-44" stroke="{INK}" stroke-width="6" fill="none" stroke-linecap="round"/>'
+        e += f'<path d="M-50,-40 Q-34,-60 -14,-46" {br}/><path d="M14,-46 Q32,-62 50,-42" {br}/>'
     else:
-        e += f'<path d="M-44,-36 Q-28,-48 -12,-38" stroke="{INK}" stroke-width="6" fill="none" stroke-linecap="round"/>'
-        e += f'<path d="M12,-40 Q30,-50 44,-38" stroke="{INK}" stroke-width="6" fill="none" stroke-linecap="round"/>'
+        e += f'<path d="M-50,-34 Q-34,-54 -14,-42" {br}/><path d="M14,-40 Q32,-50 50,-36" {br}/>'
     # mouth
     if expr == "wow":
-        e += f'<ellipse cx="4" cy="26" rx="11" ry="14" fill="{INK}"/>'
+        e += f'<ellipse cx="6" cy="30" rx="12" ry="15" fill="{INK}"/>'
     elif expr == "grin":
-        e += f'<path d="M-30,14 Q4,52 36,12 Q4,26 -30,14 Z" fill="{INK}"/>'
-        e += '<path d="M-14,34 Q4,44 20,32 Q4,30 -14,34 Z" fill="#d9534f"/>'
+        e += f'<path d="M-30,16 Q8,56 44,12 Q8,28 -30,16 Z" fill="{INK}"/>'
+        e += '<path d="M-12,36 Q8,46 26,34 Q8,32 -12,36 Z" fill="#d9534f"/>'
     else:
-        e += f'<path d="M-28,18 Q2,44 36,12" stroke="{INK}" stroke-width="6" fill="none" stroke-linecap="round"/>'
-        e += f'<path d="M30,8 Q38,12 40,18" stroke="{INK}" stroke-width="5" fill="none" stroke-linecap="round"/>'
+        e += f'<path d="M-20,24 Q14,44 46,14" stroke="{INK}" stroke-width="7" fill="none" stroke-linecap="round"/>'
+        e += f'<path d="M42,6 Q52,10 52,20" stroke="{INK}" stroke-width="6" fill="none" stroke-linecap="round"/>'
     return e + '</g>'
 
 
 def taqiya(op=1):
-    return (f'<g opacity="{op}"><path d="M-74,-52 Q-80,-112 -40,-118 L40,-118 Q80,-112 74,-52 Q0,-70 -74,-52 Z" '
-            f'fill="{NAVY}" stroke="{INK}" stroke-width="6" stroke-linejoin="round"/>'
-            f'<path d="M-70,-62 Q0,-80 70,-62" stroke="#2f4373" stroke-width="5" fill="none"/>'
-            # gold ornament (stylised Kazakh "қошқар мүйіз")
-            f'<g stroke="{GOLD}" stroke-width="4" fill="none" stroke-linecap="round">'
-            f'<path d="M0,-80 L0,-98"/><path d="M0,-90 Q-6,-102 -14,-96 Q-20,-88 -10,-84"/>'
-            f'<path d="M0,-90 Q6,-102 14,-96 Q20,-88 10,-84"/><circle cx="0" cy="-102" r="3" fill="{GOLD}"/></g></g>')
+    """Dome-shaped dark-navy Kazakh skullcap, slightly tilted, gold ornament."""
+    return (f'<g opacity="{op}" transform="rotate(6 0 -60)">'
+            f'<path d="M-77,-66 Q-84,-118 -46,-136 Q0,-146 46,-136 Q84,-118 77,-66 Q0,-50 -77,-66 Z" '
+            f'fill="{NAVY}" stroke="{INK}" stroke-width="7" stroke-linejoin="round"/>'
+            f'<path d="M-75,-80 Q0,-64 75,-80" stroke="#2c3f6c" stroke-width="5" fill="none"/>'
+            f'<path d="M-46,-130 Q0,-135 46,-130" stroke="#33497a" stroke-width="6" fill="none" stroke-linecap="round" opacity="0.8"/>'
+            # gold ornament (stylised "қошқар мүйіз")
+            f'<g stroke="#e3c27a" stroke-width="4" fill="none" stroke-linecap="round" transform="translate(0,-104) scale(0.95)">'
+            f'<path d="M0,10 L0,-12"/>'
+            f'<path d="M0,0 Q-4,-14 -14,-12 Q-24,-8 -18,2 Q-14,8 -8,4"/>'
+            f'<path d="M0,0 Q4,-14 14,-12 Q24,-8 18,2 Q14,8 8,4"/>'
+            f'<path d="M-6,12 Q0,6 6,12"/><circle cx="0" cy="-16" r="3.5" fill="{GOLD}"/></g></g>')
 
 
 def glasses():
     return (f'<g stroke="{INK}" stroke-width="5" fill="#bfe3ff" fill-opacity="0.25">'
-            f'<circle cx="-26" cy="-14" r="20"/><circle cx="26" cy="-14" r="20"/>'
-            f'<path d="M-6,-16 Q0,-22 6,-16" fill="none"/>'
-            f'<path d="M-46,-18 L-74,-24" fill="none"/><path d="M46,-18 L74,-24" fill="none"/></g>')
+            f'<circle cx="-28" cy="-11" r="22"/><circle cx="28" cy="-12" r="22"/>'
+            f'<path d="M-6,-14 Q0,-20 6,-14" fill="none"/>'
+            f'<path d="M-50,-16 L-78,-22" fill="none"/><path d="M50,-16 L78,-22" fill="none"/></g>')
+
+
+def glove(x, y, ang, flip=False):
+    """Cartoon glove hand oriented along the forearm (angle in degrees)."""
+    sy = -1 if flip else 1
+    st = f'fill="#fff" stroke="{INK}" stroke-width="4.5" stroke-linejoin="round"'
+    return (f'<g transform="translate({x},{y}) rotate({ang:.1f}) scale(1.3,{sy*1.3})">'
+            f'<rect x="10" y="-13" width="22" height="9" rx="4.5" {st}/>'
+            f'<rect x="12" y="-4" width="22" height="9" rx="4.5" {st}/>'
+            f'<rect x="10" y="5" width="19" height="9" rx="4.5" {st}/>'
+            f'<ellipse cx="2" cy="0" rx="17" ry="16" {st}/>'
+            f'<ellipse cx="6" cy="-17" rx="10" ry="6" transform="rotate(-35 6 -17)" {st}/>'
+            f'<path d="M-14,-6 L-16,6" stroke="{INK}" stroke-width="3" opacity="0.4"/></g>')
 
 
 def hero(x, y, s=1.0, arms=None, expr="smile", legs="stand", behind="", held="",
          front="", glasses_on=False, xray=False):
     """arms: dict L/R -> list of (x,y) points after the shoulder; last point = hand.
     held: svg drawn between arms and hands (objects in hand).
-    Local coordinates: head centre (0,-20) r=80, feet near y=340."""
-    arms = arms or {"L": [(-70, 150), (-62, 205)], "R": [(70, 150), (62, 205)]}
+    Local coordinates: head centre (0,-20) r=82, feet near y=340."""
+    import math
+    arms = arms or {"L": [(-76, 150), (-66, 205)], "R": [(76, 150), (66, 205)]}
     g = f'<g transform="translate({x},{y}) scale({s})">' + behind
     # legs
     if legs == "stand":
-        g += limb("M-18,215 L-26,328") + limb("M18,215 L26,328")
-        g += f'<ellipse cx="-34" cy="334" rx="22" ry="11" fill="{INK}"/><ellipse cx="34" cy="334" rx="22" ry="11" fill="{INK}"/>'
+        g += limb("M-24,246 L-28,326", 22) + limb("M24,246 L28,326", 22)
+        g += f'<path d="M-50,336 Q-50,318 -28,318 Q-10,318 -10,336 Z" fill="{INK}"/><path d="M50,336 Q50,318 28,318 Q10,318 10,336 Z" fill="{INK}"/>'
     else:  # sitting, seen from the front
-        g += limb("M-22,215 L-34,250 L-36,312") + limb("M22,215 L34,250 L36,312")
-        g += f'<ellipse cx="-44" cy="318" rx="22" ry="11" fill="{INK}"/><ellipse cx="44" cy="318" rx="22" ry="11" fill="{INK}"/>'
-    # torso + vest
-    g += f'<path d="M-44,72 Q0,58 44,72 L48,222 Q0,232 -48,222 Z" fill="#fff" stroke="{INK}" stroke-width="6" stroke-linejoin="round"/>'
-    g += (f'<path d="M-46,74 Q-30,66 -14,66 L-4,140 L-6,226 L-50,222 Z" fill="{VEST}" stroke="{INK}" stroke-width="6" stroke-linejoin="round"/>'
-          f'<path d="M46,74 Q30,66 14,66 L4,140 L6,226 L50,222 Z" fill="{VEST}" stroke="{INK}" stroke-width="6" stroke-linejoin="round"/>'
-          f'<rect x="-40" y="150" width="28" height="30" rx="4" fill="{VEST_D}" stroke="{INK}" stroke-width="4"/>'
-          f'<rect x="12" y="150" width="28" height="30" rx="4" fill="{VEST_D}" stroke="{INK}" stroke-width="4"/>'
-          f'<path d="M-40,160 L-12,160 M12,160 L40,160" stroke="{INK}" stroke-width="3"/>'
-          f'<path d="M-38,104 L-16,104 M16,104 L38,104" stroke="{VEST_D}" stroke-width="5" stroke-linecap="round"/>')
-    # arms
-    for side, sx in (("L", -42), ("R", 42)):
-        pts = [(sx, 88)] + list(arms[side])
+        g += limb("M-26,246 L-38,268 L-40,310", 22) + limb("M26,246 L38,268 L40,310", 22)
+        g += f'<path d="M-62,322 Q-62,304 -40,304 Q-20,304 -20,322 Z" fill="{INK}"/><path d="M62,322 Q62,304 40,304 Q20,304 20,322 Z" fill="{INK}"/>'
+    # white shirt torso
+    sw = f'stroke="{INK}" stroke-width="6" stroke-linejoin="round"'
+    g += f'<path d="M-68,80 Q0,58 68,80 L66,246 Q0,258 -66,246 Z" fill="#fff" {sw}/>'
+    # shirt buttons in the open front
+    g += ''.join(f'<circle cx="0" cy="{yy}" r="3" fill="{INK}" opacity="0.5"/>' for yy in (115, 150, 185, 220))
+    # vest panels (V-neck, open front)
+    g += (f'<path d="M-70,82 Q-48,64 -26,62 L-10,150 L-10,252 L-68,246 Z" fill="{VEST}" {sw}/>'
+          f'<path d="M70,82 Q48,64 26,62 L10,150 L10,252 L68,246 Z" fill="{VEST}" {sw}/>'
+          # stitching
+          f'<path d="M-58,88 Q-44,74 -32,72 L-18,150 L-18,242 M58,88 Q44,74 32,72 L18,150 L18,242" stroke="{VEST_D}" stroke-width="2.5" stroke-dasharray="6 5" fill="none"/>'
+          # vest buttons
+          f'<circle cx="16" cy="180" r="4.5" fill="{VEST_D}" stroke="{INK}" stroke-width="2"/><circle cx="16" cy="214" r="4.5" fill="{VEST_D}" stroke="{INK}" stroke-width="2"/>')
+    # pockets with flaps + buttons (two lower, one chest)
+    for px in (-60, 18):
+        g += (f'<rect x="{px}" y="162" width="42" height="48" rx="4" fill="{VEST}" stroke="{INK}" stroke-width="4"/>'
+              f'<path d="M{px-2},162 L{px+44},162 L{px+44},178 L{px+21},184 L{px-2},178 Z" fill="{VEST_D}" stroke="{INK}" stroke-width="4" stroke-linejoin="round"/>'
+              f'<circle cx="{px+21}" cy="178" r="4" fill="{INK}"/>')
+    g += (f'<path d="M24,104 L52,102 L52,116 L38,120 L24,116 Z" fill="{VEST_D}" stroke="{INK}" stroke-width="4" stroke-linejoin="round"/>')
+    # shirt collar
+    g += (f'<path d="M-2,64 L-32,60 L-20,94 Z" fill="#fff" {sw}/>'
+          f'<path d="M2,64 L32,60 L20,94 Z" fill="#fff" {sw}/>')
+    # arms (thicker sleeves)
+    for side, sx in (("L", -60), ("R", 60)):
+        pts = [(sx, 98)] + list(arms[side])
         d = "M" + " L".join(f"{px},{py}" for px, py in pts)
-        g += limb(d)
+        g += limb(d, 28)
     g += held
-    for side in ("L", "R"):
-        hx, hy = arms[side][-1]
+    for side, sx in (("L", -60), ("R", 60)):
+        pts = [(sx, 98)] + list(arms[side])
+        hx, hy = pts[-1]
+        px, py = pts[-2]
         if side + "_thumb" in arms:
             g += thumbs_up(hx, hy)
         else:
-            g += hand(hx, hy)
+            ang = math.degrees(math.atan2(hy - py, hx - px))
+            g += glove(hx, hy, ang, flip=(side == "R"))
     # head
     if xray:
-        g += ('<circle cx="0" cy="-20" r="80" fill="#9fdcff" fill-opacity="0.22" stroke="#7fd4ff" stroke-width="6"/>'
-              '<circle cx="0" cy="-20" r="80" fill="none" stroke="#ffffff" stroke-opacity="0.5" stroke-width="2" stroke-dasharray="4 6"/>')
-        g += "".join(f'<line x1="-78" y1="{yy}" x2="78" y2="{yy}" stroke="#bfe9ff" stroke-opacity="0.12" stroke-width="2"/>' for yy in range(-92, 58, 10))
+        g += ('<circle cx="0" cy="-20" r="82" fill="#9fdcff" fill-opacity="0.22" stroke="#7fd4ff" stroke-width="6"/>'
+              '<circle cx="0" cy="-20" r="82" fill="none" stroke="#ffffff" stroke-opacity="0.5" stroke-width="2" stroke-dasharray="4 6"/>')
+        g += "".join(f'<line x1="-80" y1="{yy}" x2="80" y2="{yy}" stroke="#bfe9ff" stroke-opacity="0.12" stroke-width="2"/>' for yy in range(-94, 58, 10))
         g += front
-        g += face(expr, dy=14, op=0.85) + taqiya(op=0.45)
+        g += face(expr, dy=16, op=0.85) + taqiya(op=0.4)
     else:
-        g += f'<circle cx="0" cy="-20" r="80" fill="#fff" stroke="{INK}" stroke-width="7"/>'
+        g += f'<circle cx="0" cy="-20" r="82" fill="#fff" stroke="{INK}" stroke-width="8"/>'
+        g += '<path d="M60,-60 Q86,0 40,46 Q10,64 -30,58 Q30,40 52,0 Q64,-30 60,-60 Z" fill="#dfe3ea"/>'
         g += face(expr)
         if glasses_on:
             g += glasses()

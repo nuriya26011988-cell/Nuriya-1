@@ -56,9 +56,10 @@ function hud(s){ if(!s.clock) return '';
 }
 function renderAt(t){
   const sh=TIMELINE.shots;let i=sh.length-1;while(i>0&&sh[i].start>t)i--;const s=sh[i];
-  if(i!==cur){cur=i;stage.innerHTML=`<svg class="scn" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">${DEFS2}<rect width="1920" height="1080" fill="#fff"/><g id="cam">${S2[s.scene]()}</g>${hud(s)}</svg>`;camG=document.getElementById('cam');}
+  if(i!==cur){cur=i;stage.innerHTML=`<svg class="scn" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">${DEFS2}<rect width="1920" height="1080" fill="#fff"/><g id="cam">${S2[s.scene]()}</g>${hud(s)}</svg>`;camG=document.getElementById('cam');const sv=stage.querySelector('svg');sv.pauseAnimations();}
   const u=ease(Math.min(1,Math.max(0,(t-s.start)/(s.end-s.start))));const [a,b]=s.cam,x=a[0]+(b[0]-a[0])*u,y=a[1]+(b[1]-a[1])*u,w=a[2]+(b[2]-a[2])*u;
   camG.setAttribute('transform',`scale(${1920/w}) translate(${-x},${-y})`);
+  stage.querySelector('svg').setCurrentTime(t-s.start);
   const ms=(t-s.start)*1000;for(const an of document.getAnimations()){an.pause();an.currentTime=ms}return i;
 }
 window.renderAt=renderAt;

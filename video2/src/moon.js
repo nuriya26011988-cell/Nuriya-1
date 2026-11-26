@@ -4,41 +4,48 @@
 const M={sky1:'#04060f',sky2:'#1b2142',moon:'#b8b8be',moonD:'#8d8d95',moonL:'#d6d6db',suit:'#f4f6f8',blue:'#2f6fd6',red:'#e5483b',gold:'#ffcf3f'};
 const glove=(x,y,r=17)=>`<ellipse cx="${x}" cy="${y}" rx="${r}" ry="${r1(r*1.15)}" fill="#9aa3ad" stroke="${INK}" stroke-width="5"/>`;
 const limb=d=>P(d,{w:36})+P(d,{s:M.suit,w:25});
+/* SMIL rotation around a fixed pivot (in local coords); the renderer seeks it with svg.setCurrentTime */
+const rot=(cx,cy,deg,dur,begin=0)=>`<animateTransform attributeName="transform" type="rotate" values="0 ${cx} ${cy};${deg} ${cx} ${cy};0 ${cx} ${cy};${-deg*.5} ${cx} ${cy};0 ${cx} ${cy}" dur="${dur}s" begin="${begin}s" repeatCount="indefinite"/>`;
+const bobA=(dy,dur,begin=0)=>`<animateTransform attributeName="transform" type="translate" values="0 0;0 ${dy};0 0" dur="${dur}s" begin="${begin}s" repeatCount="indefinite"/>`;
 function astro(x,y,s=1,o={}){
-  const L={stand:'M-30,-130 L-36,-12 M30,-130 L36,-12',jump:'M-30,-130 L-70,-60 L-52,0 M30,-130 L78,-74 L66,-6',walk:'M-30,-130 L-70,-16 M30,-130 L50,-12',
-           sit:'M-30,-130 L60,-140 L70,-30 M30,-130 L120,-140 L130,-30'}[o.pose||'stand'];
-  const A={down:['M-62,-290 Q-86,-230 -80,-176',-80,-170,'M62,-290 Q86,-230 80,-176',80,-170],
-           wave:['M-62,-290 Q-86,-230 -80,-176',-80,-170,'M62,-290 Q130,-320 150,-400',152,-406],
-           up:['M-62,-290 Q-130,-330 -150,-410',-152,-416,'M62,-290 Q130,-320 150,-400',152,-406],
-           reach:['M-62,-290 Q-86,-230 -80,-176',-80,-170,'M62,-290 Q150,-290 210,-300',214,-300],
-           radio:['M-62,-290 Q-86,-230 -80,-176',-80,-170,'M62,-290 Q120,-250 70,-350',66,-356],
-           float:['M-62,-290 Q-140,-280 -180,-330',-184,-336,'M62,-290 Q140,-260 190,-230',194,-226],
-           eat:['M-62,-290 Q-60,-200 -10,-250',-6,-254,'M62,-290 Q86,-230 80,-176',80,-170]}[o.arms||'down'];
-  const boots=o.pose==='sit'?'':`<ellipse cx="${o.pose==='jump'?-52:-38}" cy="${o.pose==='jump'?2:-8}" rx="30" ry="14" fill="#6b7480" stroke="${INK}" stroke-width="5"/><ellipse cx="${o.pose==='jump'?68:40}" cy="${o.pose==='jump'?-4:-8}" rx="30" ry="14" fill="#6b7480" stroke="${INK}" stroke-width="5"/>`;
-  return G(G(`<rect x="-86" y="-330" width="172" height="200" rx="26" fill="#c9cfd6" stroke="${INK}" stroke-width="6"/>`+limb(L)+boots+
-    `<path d="M-68,-318 Q0,-334 68,-318 L74,-128 Q0,-112 -74,-128Z" fill="${M.suit}" stroke="${INK}" stroke-width="7"/>`+
-    `<rect x="-36" y="-262" width="72" height="54" rx="10" fill="#dfe4ea" stroke="${INK}" stroke-width="5"/><circle cx="-16" cy="-235" r="8" fill="${M.red}"/><circle cx="6" cy="-235" r="8" fill="${M.gold}"/><circle cx="26" cy="-235" r="6" fill="#3fbf6a"/>`+
-    `<rect x="-62" y="-300" width="30" height="20" rx="3" fill="#00a3c4" stroke="${INK}" stroke-width="3"/><circle cx="-47" cy="-290" r="5" fill="${M.gold}"/>`+P('M-72,-150 H72',{s:M.blue,w:9})+
-    limb(A[0])+limb(A[3])+glove(A[1],A[2])+glove(A[4],A[5])+(o.item||'')+
-    head(0,-410,105,o.mood||'happy',o.look||[0,0],o.big)+
-    `<circle cx="0" cy="-405" r="142" fill="#bfe3ff" fill-opacity=".18" stroke="#dfe7ee" stroke-width="10"/>`+P('M-90,-470 Q-60,-520 0,-528',{s:'#fff',w:9,o:.8}),
-    {c:o.c||'',st:o.st||''}),{t:`translate(${x},${y}) scale(${o.flip?-s:s},${s})`});
+  const pose=o.pose||'stand', walk=pose==='walk';
+  const LL={stand:['M-30,-130 L-36,-12','M30,-130 L36,-12'],walk:['M-30,-130 L-36,-12','M30,-130 L36,-12'],jump:['M-30,-130 L-70,-60 L-52,0','M30,-130 L78,-74 L66,-6'],
+            sit:['M-30,-130 L60,-140 L70,-30','M30,-130 L120,-140 L130,-30']}[pose];
+  const boot=(d,bx,by)=>pose==='sit'?'':`<ellipse cx="${bx}" cy="${by}" rx="30" ry="14" fill="#6b7480" stroke="${INK}" stroke-width="5"/>`;
+  const legL=`<g>${limb(LL[0])}${boot(0,pose==='jump'?-52:-38,pose==='jump'?2:-8)}${walk?rot(-30,-130,22,1.1):''}</g>`;
+  const legR=`<g>${limb(LL[1])}${boot(0,pose==='jump'?68:40,pose==='jump'?-4:-8)}${walk?rot(30,-130,-22,1.1):''}</g>`;
+  const A={down:['M-62,-290 Q-86,-230 -80,-176',-80,-170,'M62,-290 Q86,-230 80,-176',80,-170,6,6],
+           wave:['M-62,-290 Q-86,-230 -80,-176',-80,-170,'M62,-290 Q130,-320 150,-400',152,-406,5,28],
+           up:['M-62,-290 Q-130,-330 -150,-410',-152,-416,'M62,-290 Q130,-320 150,-400',152,-406,12,12],
+           reach:['M-62,-290 Q-86,-230 -80,-176',-80,-170,'M62,-290 Q150,-290 210,-300',214,-300,6,12],
+           radio:['M-62,-290 Q-86,-230 -80,-176',-80,-170,'M62,-290 Q120,-250 70,-350',66,-356,8,5],
+           float:['M-62,-290 Q-140,-280 -180,-330',-184,-336,'M62,-290 Q140,-260 190,-230',194,-226,18,18],
+           eat:['M-62,-290 Q-60,-200 -10,-250',-6,-254,'M62,-290 Q86,-230 80,-176',80,-170,14,6]}[o.arms||'down'];
+  const sw=walk?1.1:1.8;
+  const armL=`<g>${limb(A[0])}${glove(A[1],A[2])}${rot(-62,-290,walk?-20:A[6],sw,.2)}</g>`;
+  const armR=`<g>${limb(A[3])}${glove(A[4],A[5])}${(o.item||'')}${rot(62,-290,walk?20:A[7],o.arms==='wave'?.9:sw,0)}</g>`;
+  const headG=`<g>${head(0,-410,105,o.mood||'happy',o.look||[0,0],o.big)}<circle cx="0" cy="-405" r="142" fill="#bfe3ff" fill-opacity=".18" stroke="#dfe7ee" stroke-width="10"/>${P('M-90,-470 Q-60,-520 0,-528',{s:'#fff',w:9,o:.8})}${rot(0,-300,4,2.6,.4)}</g>`;
+  const torso=`<path d="M-68,-318 Q0,-334 68,-318 L74,-128 Q0,-112 -74,-128Z" fill="${M.suit}" stroke="${INK}" stroke-width="7"/>`+
+    `<rect x="-36" y="-262" width="72" height="54" rx="10" fill="#dfe4ea" stroke="${INK}" stroke-width="5"/><circle cx="-16" cy="-235" r="8" fill="${M.red}"><animate attributeName="opacity" values="1;.3;1" dur="1s" repeatCount="indefinite"/></circle><circle cx="6" cy="-235" r="8" fill="${M.gold}"/><circle cx="26" cy="-235" r="6" fill="#3fbf6a"><animate attributeName="opacity" values=".3;1;.3" dur="1.4s" repeatCount="indefinite"/></circle>`+
+    `<rect x="-62" y="-300" width="30" height="20" rx="3" fill="#00a3c4" stroke="${INK}" stroke-width="3"/><circle cx="-47" cy="-290" r="5" fill="${M.gold}"/>`+P('M-72,-150 H72',{s:M.blue,w:9});
+  const upper=`<g><rect x="-86" y="-330" width="172" height="200" rx="26" fill="#c9cfd6" stroke="${INK}" stroke-width="6"/>${torso}${armL}${armR}${headG}${pose==='sit'?'':bobA(walk?-10:-5,walk?.55:2.2)}</g>`;
+  return G(G(legL+legR+upper,{c:o.c||'',st:o.st||''}),{t:`translate(${x},${y}) scale(${o.flip?-s:s},${s})`});
 }
 /* the same hero at home: pyjamas */
 function pyjama(x,y,s=1,o={}){
   return G(legs()+`<path d="M-58,-300 Q0,-312 58,-300 L64,-122 L-64,-122Z" fill="#6c7bd9" stroke="${INK}" stroke-width="6"/>`+P('M-58,-260 H58 M-60,-220 H60 M-62,-180 H62 M-63,-140 H63',{s:'#9aa6f0',w:6})+
-    (ARMS[o.arms||'down'])()+head(0,-410,105,o.mood||'scared',o.look||[0,0],o.big),{t:`translate(${x},${y}) scale(${s})`});
+    `<g>${(ARMS[o.arms||'down'])()}${rot(0,-288,8,.9)}</g><g>${head(0,-410,105,o.mood||'scared',o.look||[0,0],o.big)}${rot(0,-300,6,1.2)}</g>`,{t:`translate(${x},${y}) scale(${s})`});
 }
 function mom(x,y,s=1){return G(legs()+`<path d="M-58,-300 Q0,-312 58,-300 L96,-110 L-96,-110Z" fill="#d1497b" stroke="${INK}" stroke-width="6"/>`+
-  arm('M52,-288 Q110,-330 70,-390')+hand(66,-394)+`<rect x="52" y="-440" width="34" height="62" rx="8" fill="#333" stroke="${INK}" stroke-width="4"/>`+arm('M-52,-288 Q-80,-230 -70,-170')+hand(-70,-166)+
+  arm('M52,-288 Q110,-330 70,-390')+hand(66,-394)+`<rect x="52" y="-440" width="34" height="62" rx="8" fill="#333" stroke="${INK}" stroke-width="4"/>`+`<g>${arm('M-52,-288 Q-80,-230 -70,-170')+hand(-70,-166)}${rot(-52,-288,-30,1.2)}</g>`+
   `<circle cx="0" cy="-410" r="100" fill="#e9dfd2" stroke="${INK}" stroke-width="8"/><circle cx="0" cy="-525" r="40" fill="#3b2b22" stroke="${INK}" stroke-width="6"/><path d="M-98,-430 Q-90,-520 0,-516 Q90,-520 98,-430 Q60,-480 0,-482 Q-60,-480 -98,-430Z" fill="#3b2b22"/>`+
   `<ellipse cx="-30" cy="-400" rx="8" ry="13" fill="${INK}"/><ellipse cx="30" cy="-400" rx="8" ry="13" fill="${INK}"/>`+P('M-22,-360 Q0,-344 22,-360',{w:6}),{t:`translate(${x},${y}) scale(${s})`})}
 function stars(n=140,sd=3,h=1080){srand(sd);let g='';for(let i=0;i<n;i++){const r=r1(.8+rnd()*2.4);g+=`<circle class="${i%5?'':'glow'}" style="--d:${r1(1+rnd()*2)}s" cx="${r1(rnd()*1920)}" cy="${r1(rnd()*h)}" r="${r}" fill="#fff" opacity="${r1(.4+rnd()*.6)}"/>`}return g}
 const space=(sd)=>`<defs>${vgrad('spc',M.sky1,M.sky2)}</defs><rect width="1920" height="1080" fill="url(#spc)"/>`+stars(170,sd);
 function earth(x,y,r){return G(`<defs><radialGradient id="eG" cx="35%" cy="30%" r="80%"><stop offset="0" stop-color="#7fd0ff"/><stop offset=".6" stop-color="#2a7bd6"/><stop offset="1" stop-color="#123a7a"/></radialGradient></defs>`+
   `<circle r="${r*1.08}" fill="#5fb6ff" opacity=".18"/><circle r="${r}" fill="url(#eG)" stroke="${INK}" stroke-width="${r1(r*.04)}"/>`+
-  `<path d="${blob(-r*.3,-r*.2,r*.32,r*.22,5)}" fill="#3fae5a"/><path d="${blob(r*.35,r*.25,r*.28,r*.2,6)}" fill="#c9a65a"/><path d="${blob(-r*.05,r*.5,r*.2,r*.12,7)}" fill="#3fae5a"/>`+
-  P(`M${-r*.8},${-r*.45} q${r*.4},${-r*.15} ${r*.8},0 M${-r*.2},${r*.05} q${r*.4},-${r*.12} ${r*.9},${r*.05} M${-r*.7},${r*.6} q${r*.3},-${r*.1} ${r*.6},0`,{s:'#fff',w:r1(r*.07),o:.85})+
+  `<clipPath id="ec${r}"><circle r="${r*.97}"/></clipPath><g clip-path="url(#ec${r})"><g>${[0,1].map(k=>`<g transform="translate(${k*2*r},0)"><path d="${blob(-r*.3,-r*.2,r*.32,r*.22,5)}" fill="#3fae5a"/><path d="${blob(r*.35,r*.25,r*.28,r*.2,6)}" fill="#c9a65a"/><path d="${blob(-r*.05,r*.5,r*.2,r*.12,7)}" fill="#3fae5a"/><path d="${blob(-r*.95,r*.1,r*.25,r*.3,8)}" fill="#3fae5a"/></g>`).join('')}<animateTransform attributeName="transform" type="translate" values="0 0;${-2*r} 0" dur="24s" repeatCount="indefinite"/></g>`+
+  `<g>${P(`M${-r*.8},${-r*.45} q${r*.4},${-r*.15} ${r*.8},0 M${-r*.2},${r*.05} q${r*.4},-${r*.12} ${r*.9},${r*.05} M${-r*.7},${r*.6} q${r*.3},-${r*.1} ${r*.6},0`,{s:'#fff',w:r1(r*.07),o:.85})}<animateTransform attributeName="transform" type="translate" values="${r*.5} 0;${-r*.5} 0" dur="12s" repeatCount="indefinite"/></g></g>`+
   `<path d="M${r*.2},${-r*.98} A${r},${r} 0 0 1 ${r*.2},${r*.98} A${r*.9},${r} 0 0 0 ${r*.2},${-r*.98}Z" fill="#000" opacity=".35"/>`,{t:`translate(${x},${y})`})}
 function moonGround(y=760,sd=4){srand(sd);let cr='';for(let i=0;i<14;i++){const cx=r1(rnd()*1920),cy=r1(y+40+Math.pow(rnd(),.8)*(1080-y-40)),rx=r1(30+rnd()*120*((cy-y)/300+.3)),ry=r1(rx*.28);
   cr+=`<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${M.moonD}" stroke="#5e5e66" stroke-width="3"/><path d="M${cx-rx},${cy} A${rx},${ry} 0 0 0 ${cx+rx},${cy}" fill="none" stroke="${M.moonL}" stroke-width="5"/>`}
@@ -46,7 +53,7 @@ function moonGround(y=760,sd=4){srand(sd);let cr='';for(let i=0;i<14;i++){const 
 function lander(x,y,s=1){return G(P('M-140,0 L-90,-120 M140,0 L90,-120 M-60,0 L-40,-110 M60,0 L40,-110',{w:10,s:'#8a8f96'})+`<ellipse cx="-140" cy="0" rx="30" ry="8" fill="#8a8f96" stroke="${INK}" stroke-width="4"/><ellipse cx="140" cy="0" rx="30" ry="8" fill="#8a8f96" stroke="${INK}" stroke-width="4"/>`+
   `<path d="M-130,-110 L130,-110 L110,-200 L-110,-200Z" fill="#d9a63a" stroke="${INK}" stroke-width="7"/>`+P('M-120,-140 H120 M-115,-170 H115',{s:'#b07f22',w:5})+
   `<path d="M-90,-200 L-70,-330 L70,-330 L90,-200Z" fill="#e7eaee" stroke="${INK}" stroke-width="7"/><rect x="-34" y="-300" width="68" height="60" rx="8" fill="#2a3550" stroke="${INK}" stroke-width="5"/>`+
-  P('M100,-200 L100,-20 M120,-200 L120,-20 M100,-160 H120 M100,-120 H120 M100,-80 H120 M100,-40 H120',{w:5,s:'#6b7480'})+`<path d="M-20,-330 V-390 M-20,-390 l40,10 l-40,10" stroke="${INK}" stroke-width="5" fill="#00a3c4"/>`,{t:`translate(${x},${y}) scale(${s})`})}
+  P('M100,-200 L100,-20 M120,-200 L120,-20 M100,-160 H120 M100,-120 H120 M100,-80 H120 M100,-40 H120',{w:5,s:'#6b7480'})+`<path d="M-20,-330 V-390" stroke="${INK}" stroke-width="5"/><path d="M-20,-390 l50,12 l-50,12Z" fill="#00a3c4" stroke="${INK}" stroke-width="4"><animate attributeName="d" values="M-20,-390 l50,12 l-50,12Z;M-20,-390 l46,4 l-46,20Z;M-20,-390 l50,12 l-50,12Z" dur="1.2s" repeatCount="indefinite"/></path>`,{t:`translate(${x},${y}) scale(${s})`})}
 function rocket(x,y,s=1,flame=false){return G((flame?`<g class="flick" style="--d:.15s"><path d="M-60,0 C-70,120 -20,230 0,300 C20,230 70,120 60,0Z" fill="url(#flameO)"/><path d="M-30,0 C-36,80 -10,150 0,190 C10,150 36,80 30,0Z" fill="url(#flameI)"/></g>`:'')+
   `<path d="M-70,0 L-140,60 L-140,-90 L-70,-160Z M70,0 L140,60 L140,-90 L70,-160Z" fill="${M.red}" stroke="${INK}" stroke-width="7"/>`+
   `<rect x="-70" y="-620" width="140" height="620" rx="20" fill="#f4f6f8" stroke="${INK}" stroke-width="8"/>`+P('M-70,-120 H70 M-70,-460 H70',{s:M.red,w:18})+
@@ -102,7 +109,7 @@ S2.call=()=>space(12)+moonGround(820,12)+astro(420,920,.9,{arms:'radio',mood:'ha
   `<rect x="980" y="0" width="940" height="1080" fill="#ffe8c7"/><rect x="980" y="780" width="940" height="300" fill="#c99a6a"/>`+P('M980,0 V1080',{w:10})+mom(1450,900,.9)+
   P('M560,420 C760,300 1000,300 1300,420',{s:M.gold,w:10,c:'draw',st:'--d:1.3s;--w:.4s;stroke-dasharray:1'})+label(960,240,'1,3 СЕКУНДТАН СОҢ',INK,M.gold,0,1.6)+T(1450,200,'Жерде',{size:56,anchor:'middle',font:"Montserrat, sans-serif"})+T(420,200,'Айда',{size:56,anchor:'middle',fill:'#fff',font:"Montserrat, sans-serif"});
 S2.heat=()=>space(13)+sun(300,200,90)+moonGround(780,13)+`<path d="M960,760 L1920,740 V1080 H960Z" fill="#1d1f2e" opacity=".75"/>`+
-  astro(960,900,1,{arms:'down',pose:'walk',mood:'worried'})+label(480,460,'+120°C','#fff',M.red,-3,.4)+label(1480,460,'−100°C','#fff','#2f78b7',3,1)+sfx(480,620,'ЫСТЫҚ!',{size:70,w:.8,fill:'#ffd7cf',stroke:'#5a1a10'})+sfx(1480,620,'АЯЗ!',{size:70,w:1.4,fill:'#d6e9fb',stroke:'#0f2236'});
+  G(astro(0,0,1,{arms:'down',pose:'walk',mood:'worried'})+`<animateTransform attributeName="transform" type="translate" values="520 900;1400 900" dur="11s" fill="freeze"/>`,{})+label(480,460,'+120°C','#fff',M.red,-3,.4)+label(1480,460,'−100°C','#fff','#2f78b7',3,1)+sfx(480,620,'ЫСТЫҚ!',{size:70,w:.8,fill:'#ffd7cf',stroke:'#5a1a10'})+sfx(1480,620,'АЯЗ!',{size:70,w:1.4,fill:'#d6e9fb',stroke:'#0f2236'});
 S2.dust=()=>`<defs>${vgrad('du','#9a9aa2','#6b6b73')}</defs><rect width="1920" height="1080" fill="url(#du)"/>`+(()=>{srand(5);let g='';for(let i=0;i<500;i++)g+=`<circle cx="${r1(rnd()*1920)}" cy="${r1(rnd()*1080)}" r="${r1(1+rnd()*3)}" fill="${rnd()>.5?'#c9c9cf':'#5e5e66'}"/>`;return g})()+
   G(`<path d="M-260,-40 C-260,-200 260,-200 260,-40 L260,60 L-260,60Z" fill="#6b7480" stroke="${INK}" stroke-width="9"/>`+P('M-220,20 H220 M-200,-30 H200',{s:'#4b525c',w:8}),{t:'translate(760,760)'})+
   G(`<circle r="190" fill="#fff" stroke="${INK}" stroke-width="12"/>`+[[-60,-40],[40,30],[-10,80],[70,-60],[-90,50]].map(([x,y])=>`<path d="M${x},${y} l30,-50 l25,40 l-15,35Z" fill="#bfc3cc" stroke="${INK}" stroke-width="4"/>`).join('')+P('M134,134 L250,250',{w:30}),{t:'translate(1420,420)',c:'pop',st:'--w:.6s'})+

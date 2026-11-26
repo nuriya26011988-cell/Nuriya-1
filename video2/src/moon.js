@@ -87,36 +87,36 @@ S2.zeroG=()=>capsuleBg()+porthole(1500,420,170,space(7)+earth(1500,470,120))+
    .map(([x,y,w,g])=>G(G(g,{c:'spinfloat',st:`--w:${w}s`}),{t:`translate(${x},${y})`})).join('')+label(960,150,'САЛМАҚСЫЗДЫҚ','#fff',M.blue,-2,.6);
 S2.travel=()=>space(11)+G(earth(0,0,200),{t:'translate(300,820)',c:'shrink'})+G(`<circle r="150" fill="${M.moon}" stroke="${INK}" stroke-width="7"/><circle cx="-40" cy="-30" r="34" fill="${M.moonD}"/><circle cx="50" cy="40" r="24" fill="${M.moonD}"/><circle cx="20" cy="-70" r="16" fill="${M.moonD}"/>`,{t:'translate(1600,260)',c:'grow'})+
   P('M480,700 C800,560 1100,420 1440,320',{s:'#fff',w:6,st:'stroke-dasharray:18 16'})+G(G(rocket(0,0,.25,true),{t:'rotate(62)'}),{c:'flyacross'})+
-  label(960,980,'384 000 км · 3 КҮН',INK,M.gold,0,.6)+sfx(1200,700,'Zzz… ұйықтап оянғанша',{size:54,w:1.4});
+  label(960,980,'384 000 км · 3 КҮН',INK,M.gold,0,.6)+sfx(1200,700,'Қор-р-р… ұйықтап оянғанша',{size:54,w:1.4});
 S2.landing=()=>space(2)+earth(1600,200,110)+moonGround(760,2)+lander(700,820,1.1)+G(astro(1080,880,1,{arms:'reach',mood:'happy',pose:'walk',look:[.1,0]}),{c:'stepin'})+label(1100,300,'09:00 · АЙДАСЫҢ!','#fff',M.blue,-3,.4);
 S2.blackSky=()=>`<defs>${vgrad('bs','#000','#0e1330')}</defs><rect width="1920" height="1080" fill="url(#bs)"/>`+stars(60,4,700)+sun(420,230,90)+moonGround(780,6)+
-  astro(1100,900,1,{arms:'up',mood:'curious',look:[-.15,-.2]})+label(1300,260,'АСПАН ҚАП-ҚАРА!','#fff',M.red,3,.8)+sfx(700,480,'көк аспан = ауа',{size:60,w:1.6,fill:'#7fc4ff'});
+  astro(1100,900,1,{arms:'up',mood:'curious',look:[-.15,-.2]})+label(1300,260,'АСПАН ҚАП-ҚАРА!','#fff',M.red,3,.8)+sfx(700,480,'аспанды көк қылатын — ауа',{size:56,w:1.6,fill:'#7fc4ff'});
 S2.jump=()=>space(5)+earth(1700,340,90)+moonGround(820,5)+G(astro(760,900,1,{arms:'up',pose:'jump',mood:'happy'}),{c:'moonjump'})+
   G(`<rect x="-230" y="-200" width="460" height="400" rx="30" fill="#fff" stroke="${INK}" stroke-width="7"/>`+T(-110,-120,'ЖЕР',{size:56,anchor:'middle',font:"Montserrat, sans-serif"})+T(110,-120,'АЙ',{size:56,anchor:'middle',font:"Montserrat, sans-serif"})+
     bigT(-110,30,'60',110,'#2f78b7',1)+bigT(110,30,'10',110,M.red,1.6)+T(-110,120,'келі',{size:50,anchor:'middle'})+T(110,120,'келі',{size:50,anchor:'middle'})+P('M0,-170 V160',{w:5}),{t:'translate(1460,560)',c:'pop',st:'--w:.6s'})+sfx(760,200,'УХУУ!',{size:90,w:.4});
 S2.silence=()=>space(8)+moonGround(780,8)+G(G(`<path d="${blob(0,0,110,90,3)}" fill="${M.moonD}" stroke="${INK}" stroke-width="7"/>`,{c:'roll'}),{t:'translate(1500,600)'})+
   astro(520,900,.95,{arms:'radio',mood:'worried'})+astro(1000,900,.85,{arms:'down',mood:'curious',flip:1})+
   P('M620,560 q40,-40 80,0 t80,0 t80,0',{s:'#7fc4ff',w:8,c:'glow'})+G(`<circle r="70" fill="#fff" stroke="${INK}" stroke-width="7"/><path d="M-30,-20 h20 l25,-25 v90 l-25,-25 h-20Z" fill="${INK}"/>`+P('M-50,-50 L50,50',{s:M.red,w:12}),{t:'translate(1500,300)',c:'pop',st:'--w:.8s'})+label(960,1000,'ДЫБЫС ЖОҚ',INK,M.gold,0,1.2);
-S2.earthView=()=>space(9)+G(earth(0,0,320),{t:'translate(1180,380)',c:'bob',st:'--d:6s;--a:-10px'})+moonGround(820,9)+astro(520,930,1,{arms:'up',mood:'happy',look:[.2,-.25]})+label(1180,920,'×4 ҮЛКЕН','#fff',M.blue,-2,1);
+S2.earthView=()=>space(9)+G(earth(0,0,320),{t:'translate(1180,380)',c:'bob',st:'--d:6s;--a:-10px'})+moonGround(820,9)+astro(520,930,1,{arms:'up',mood:'happy',look:[.2,-.25]})+label(1180,920,'4 ЕСЕ ҮЛКЕН','#fff',M.blue,-2,1);
 S2.call=()=>space(12)+moonGround(820,12)+astro(420,920,.9,{arms:'radio',mood:'happy'})+
   `<rect x="980" y="0" width="940" height="1080" fill="#ffe8c7"/><rect x="980" y="780" width="940" height="300" fill="#c99a6a"/>`+P('M980,0 V1080',{w:10})+mom(1450,900,.9)+
-  P('M560,420 C760,300 1000,300 1300,420',{s:M.gold,w:10,c:'draw',st:'--d:1.3s;--w:.4s;stroke-dasharray:1'})+label(960,240,'1,3 СЕКУНД',INK,M.gold,0,1.6)+T(1450,200,'Жерде',{size:56,anchor:'middle',font:"Montserrat, sans-serif"})+T(420,200,'Айда',{size:56,anchor:'middle',fill:'#fff',font:"Montserrat, sans-serif"});
+  P('M560,420 C760,300 1000,300 1300,420',{s:M.gold,w:10,c:'draw',st:'--d:1.3s;--w:.4s;stroke-dasharray:1'})+label(960,240,'1,3 СЕКУНДТАН СОҢ',INK,M.gold,0,1.6)+T(1450,200,'Жерде',{size:56,anchor:'middle',font:"Montserrat, sans-serif"})+T(420,200,'Айда',{size:56,anchor:'middle',fill:'#fff',font:"Montserrat, sans-serif"});
 S2.heat=()=>space(13)+sun(300,200,90)+moonGround(780,13)+`<path d="M960,760 L1920,740 V1080 H960Z" fill="#1d1f2e" opacity=".75"/>`+
   astro(960,900,1,{arms:'down',pose:'walk',mood:'worried'})+label(480,460,'+120°C','#fff',M.red,-3,.4)+label(1480,460,'−100°C','#fff','#2f78b7',3,1)+sfx(480,620,'ЫСТЫҚ!',{size:70,w:.8,fill:'#ffd7cf',stroke:'#5a1a10'})+sfx(1480,620,'АЯЗ!',{size:70,w:1.4,fill:'#d6e9fb',stroke:'#0f2236'});
 S2.dust=()=>`<defs>${vgrad('du','#9a9aa2','#6b6b73')}</defs><rect width="1920" height="1080" fill="url(#du)"/>`+(()=>{srand(5);let g='';for(let i=0;i<500;i++)g+=`<circle cx="${r1(rnd()*1920)}" cy="${r1(rnd()*1080)}" r="${r1(1+rnd()*3)}" fill="${rnd()>.5?'#c9c9cf':'#5e5e66'}"/>`;return g})()+
   G(`<path d="M-260,-40 C-260,-200 260,-200 260,-40 L260,60 L-260,60Z" fill="#6b7480" stroke="${INK}" stroke-width="9"/>`+P('M-220,20 H220 M-200,-30 H200',{s:'#4b525c',w:8}),{t:'translate(760,760)'})+
   G(`<circle r="190" fill="#fff" stroke="${INK}" stroke-width="12"/>`+[[-60,-40],[40,30],[-10,80],[70,-60],[-90,50]].map(([x,y])=>`<path d="M${x},${y} l30,-50 l25,40 l-15,35Z" fill="#bfc3cc" stroke="${INK}" stroke-width="4"/>`).join('')+P('M134,134 L250,250',{w:30}),{t:'translate(1420,420)',c:'pop',st:'--w:.6s'})+
-  label(1420,780,'ӘЙНЕКТЕЙ ӨТКІР',INK,M.gold,-2,1.2)+sfx(500,240,'мылтық иісі',{size:60,w:2});
+  label(1420,780,'ӘЙНЕКТЕЙ ӨТКІР',INK,M.gold,-2,1.2)+sfx(560,240,'атылған мылтықтың иісі',{size:56,w:2});
 S2.footprint=()=>`<defs>${vgrad('fp','#a9a9b0','#7a7a82')}</defs><rect width="1920" height="1080" fill="url(#fp)"/>`+(()=>{srand(8);let g='';for(let i=0;i<400;i++)g+=`<circle cx="${r1(rnd()*1920)}" cy="${r1(rnd()*1080)}" r="${r1(1+rnd()*3)}" fill="${rnd()>.5?'#c9c9cf':'#5e5e66'}"/>`;return g})()+
   G(`<path d="M-120,-330 C-40,-360 60,-360 120,-320 C150,-200 150,200 110,330 C40,360 -40,360 -110,330 C-150,200 -150,-200 -120,-330Z" fill="#6b6b73" stroke="#4a4a52" stroke-width="10"/>`+Array.from({length:12},(_,i)=>`<rect x="-100" y="${-300+i*52}" width="200" height="20" rx="8" fill="#55555c"/>`).join(''),{t:'translate(820,560) rotate(-12)',c:'fade',st:'--w:.2s'})+
-  label(1420,400,'1969 · АРМСТРОНГ','#fff',M.blue,3,.8)+label(1420,560,'МИЛЛИОН ЖЫЛ ӨШПЕЙДІ',INK,M.gold,-2,1.6);
+  label(1420,400,'1969 · АРМСТРОНГ','#fff',M.blue,3,.8)+label(1380,560,'МИЛЛИОНДАҒАН ЖЫЛ ӨШПЕЙДІ',INK,M.gold,-2,1.6);
 S2.base=()=>`<defs>${vgrad('bb','#e9eef4','#b9c3cf')}</defs><rect width="1920" height="1080" fill="url(#bb)"/>`+P('M0,860 H1920',{w:6})+`<rect y="860" width="1920" height="220" fill="#8a94a0"/>`+
   `<path d="M200,860 C200,300 1720,300 1720,860" fill="none" stroke="#9aa4b0" stroke-width="14"/>`+porthole(1500,420,140,space(3)+earth(1500,440,90))+
   `<rect x="300" y="620" width="520" height="40" rx="10" fill="#8b5a32" stroke="${INK}" stroke-width="5"/>`+P('M340,660 V860 M780,660 V860',{w:10})+
   astro(960,880,1,{arms:'eat',mood:'happy',item:`<rect x="-30" y="-310" width="40" height="90" rx="10" fill="#ff7a3a" stroke="${INK}" stroke-width="4" transform="rotate(-30 -10 -265)"/>`})+label(960,180,'15:00 · ТҮСКІ АС','#fff',M.blue,-2,.4);
 S2.ice=()=>space(14)+moonGround(560,14)+`<ellipse cx="960" cy="820" rx="700" ry="220" fill="#1b1d2b" stroke="${INK}" stroke-width="8"/>`+
   [[760,800],[900,860],[1060,780],[1180,850],[840,900],[1000,900]].map(([x,y],i)=>`<path class="glow" style="--w:${i*.2}s" d="M${x},${y} l20,-60 l20,60 l-20,20Z" fill="#9fe3ff" stroke="#e6faff" stroke-width="4"/>`).join('')+
-  label(960,240,'МҰЗ!','#000','#9fe3ff',-2,.4)+G(T(-200,0,'мұз →',{size:64,fill:'#fff'})+T(30,0,'💧 су',{size:64,fill:'#7fc4ff'})+T(260,0,'+ оттегі',{size:64,fill:'#b6ffcf'}),{t:'translate(820,420)',c:'pop',st:'--w:1.2s'});
+  label(960,240,'МҰЗ!','#000','#9fe3ff',-2,.4)+G(T(-200,0,'мұз →',{size:64,fill:'#fff'})+T(30,0,'су',{size:64,fill:'#7fc4ff'})+T(260,0,'+ оттегі',{size:64,fill:'#b6ffcf'}),{t:'translate(820,420)',c:'pop',st:'--w:1.2s'});
 S2.rover=()=>space(15)+earth(1700,170,80)+moonGround(700,15)+G(G(`<rect x="-220" y="-170" width="440" height="80" rx="16" fill="#e7eaee" stroke="${INK}" stroke-width="7"/><rect x="-200" y="-230" width="400" height="20" fill="#d9a63a" stroke="${INK}" stroke-width="5"/>`+
   [-160,0,160].map(x=>G(`<circle r="56" fill="#3a3f48" stroke="${INK}" stroke-width="7"/>`+P('M-50,0 H50 M0,-50 V50',{s:'#9aa3ad',w:8}),{t:`translate(${x},-40)`,c:'wheel'})).join('')+
   astro(-40,-150,.55,{arms:'reach',mood:'happy'}),{c:'bob',st:'--d:.5s;--a:-8px'}),{t:'translate(800,900)',c:'driveby'})+label(960,180,'17:00 · КРАТЕРЛЕР','#fff',M.blue,-2,.4);
@@ -130,7 +130,7 @@ S2.sleep=()=>`<defs>${vgrad('sl','#1e2350','#2f3576')}</defs><rect width="1920" 
 S2.goHome=()=>space(18)+earth(1650,200,140)+moonGround(760,18)+(()=>{let g='';for(let i=0;i<10;i++)g+=G(`<ellipse rx="34" ry="16" fill="#77777f"/>`+P('M-24,0 H24',{s:'#5e5e66',w:4}),{t:`translate(${300+i*120},${r1(1000-i*22+(i%2?14:-14))}) rotate(-8)`});return g})()+
   G(rocket(0,0,.45,true),{t:'translate(1500,700)',c:'liftoff'})+label(700,300,'06:00 · ҮЙГЕ ҚАЙТУ','#fff',M.blue,-2,.4)+sfx(700,480,'ізің мәңгі қалады',{size:70,w:1.4});
 S2.cta=()=>`<defs>${vgrad('ct','#1a1240','#2d1f66')}</defs><rect width="1920" height="1080" fill="url(#ct)"/>`+stars(80,21)+bigT(960,360,'Айда бірінші',110,'#fff',.2)+bigT(960,500,'не істер едің?',110,'#fff',.5)+
-  bigT(960,660,'Комментке жаз!',96,M.gold,1)+label(760,860,'👍 ЛАЙК','#fff','#3b5bdb',-2,1.4)+label(1180,860,'🔔 ЖАЗЫЛУ','#fff',M.red,2,1.7)+astro(1660,1000,.6,{arms:'wave',mood:'happy'});
+  bigT(960,660,'Комментке жаз!',96,M.gold,1)+label(760,860,'ЛАЙК','#fff','#3b5bdb',-2,1.4)+label(1180,860,'ЖАЗЫЛУ','#fff',M.red,2,1.7)+astro(1660,1000,.6,{arms:'wave',mood:'happy'});
 
 /* timeline: [phrase, scene, camFrom, camTo, clock, oxygen%] */
 const SHOTS2=[

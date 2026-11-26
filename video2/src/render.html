@@ -1,0 +1,65 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Montserrat:wght@700;900&family=PT+Sans:wght@400;700&display=swap">
+<link rel="stylesheet" href="kit.css">
+<style>
+html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:#000}
+#stage svg{width:1920px;height:1080px;display:block}
+@keyframes liftoff{0%,15%{transform:translateY(0)}100%{transform:translateY(-1500px)}}
+.liftoff{animation:liftoff 4s ease-in .2s both}
+@keyframes puff{0%{transform:scale(.3);opacity:0}30%{opacity:1}100%{transform:scale(1.6) translateY(-40px);opacity:.85}}
+.puff{animation:puff 2.4s ease-out var(--w,0s) both;transform-origin:50% 50%}
+@keyframes cnt{0%{opacity:0;transform:scale(1.6)}10%,85%{opacity:1;transform:scale(1)}100%{opacity:0}}
+.cnt{animation:cnt 1s ease var(--w,0s) both;transform-origin:50% 50%;opacity:0}
+@keyframes floaty{0%,100%{transform:translate(0,0) rotate(-6deg)}50%{transform:translate(30px,-40px) rotate(8deg)}}
+.floaty{animation:floaty 5s ease-in-out infinite}
+@keyframes spinfloat{0%{transform:translate(0,0) rotate(0)}50%{transform:translate(20px,-30px) rotate(180deg)}100%{transform:translate(0,0) rotate(360deg)}}
+.spinfloat{animation:spinfloat 6s linear var(--w,0s) infinite}
+@keyframes shrink{from{transform:scale(1)}to{transform:scale(.55)}}
+.shrink{animation:shrink 7s ease-in-out both}
+@keyframes grow{from{transform:scale(.6)}to{transform:scale(1.15)}}
+.grow{animation:grow 7s ease-in-out both}
+@keyframes flyacross{from{transform:translate(480px,700px)}to{transform:translate(1440px,320px)}}
+.flyacross{animation:flyacross 6s ease-in-out both}
+@keyframes stepin{from{transform:translateX(-180px)}to{transform:translateX(0)}}
+.stepin{animation:stepin 2.2s ease-out both}
+@keyframes moonjump{0%,100%{transform:translateY(0)}45%,55%{transform:translateY(-330px)}}
+.moonjump{animation:moonjump var(--d,2.6s) ease-in-out infinite}
+@keyframes roll{from{transform:translate(0,0) rotate(0)}to{transform:translate(-500px,260px) rotate(-300deg)}}
+.roll{animation:roll 3.5s ease-in .4s both}
+@keyframes wheel{to{transform:rotate(360deg)}}
+.wheel{animation:wheel 1s linear infinite}
+@keyframes driveby{from{transform:translateX(-600px)}to{transform:translateX(500px)}}
+.driveby{animation:driveby 12s linear both}
+@keyframes redflash{0%,100%{opacity:0}50%{opacity:.28}}
+.redflash{animation:redflash .8s ease-in-out infinite}
+.scn :is(.puff,.cnt,.floaty,.spinfloat,.shrink,.grow,.stepin,.moonjump,.roll,.wheel){transform-box:fill-box}
+.scn :is(.shrink,.grow,.wheel,.cnt,.puff){transform-origin:50% 50%}
+</style></head>
+<body><div id="stage"></div>
+<script src="kit.js"></script><script src="shots.js"></script><script src="style.js"></script><script src="moon.js"></script><script src="timeline.js"></script>
+<script>
+const stage=document.getElementById('stage');let cur=-1,camG=null;
+const ease=u=>u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;
+const HF="Montserrat, 'Arial Black', sans-serif";
+function hud(s){ if(!s.clock) return '';
+  if(!s.o2) return `<g font-family="${HF}" font-weight="900"><rect x="40" y="36" width="250" height="92" rx="18" fill="#0b0f1f" opacity=".85" stroke="#fff" stroke-width="4"/><text x="165" y="104" font-size="64" fill="#fff" text-anchor="middle">${s.clock}</text></g>`;
+  const o2=s.o2, oc=o2<=30?'#ff3b30':o2<70?'#ffcf3f':'#3fdc7a';
+  return `<g font-family="${HF}" font-weight="900">
+   <rect x="40" y="36" width="250" height="92" rx="18" fill="#0b0f1f" opacity=".85" stroke="#fff" stroke-width="4"/><text x="165" y="104" font-size="64" fill="#fff" text-anchor="middle">${s.clock}</text>
+   <g transform="translate(1500,40)"><text x="0" y="40" font-size="34" fill="#fff" stroke="#000" stroke-width="6" paint-order="stroke">O₂</text>
+    <rect x="60" y="12" width="300" height="38" rx="19" fill="#0b0f1f" stroke="#fff" stroke-width="4"/><rect x="66" y="18" width="${r1(288*o2/100)}" height="26" rx="13" fill="${oc}"/>
+    <text x="210" y="42" font-size="26" fill="#fff" text-anchor="middle" stroke="#000" stroke-width="4" paint-order="stroke">${o2}%</text>
+    ${[0,1,2,3,4].map(i=>`<path transform="translate(${80+i*56},92) scale(1.1)" d="M0,-20 L6,-6 L21,-6 L9,3 L13,18 L0,9 L-13,18 L-9,3 L-21,-6 L-6,-6Z" fill="${i< Math.ceil(o2/25)?'#ffcf3f':'#3a3f55'}" stroke="#000" stroke-width="3"/>`).join('')}</g>
+   <g transform="translate(130,940)"><circle r="92" fill="#8d8d95" stroke="#fff" stroke-width="7"/><circle cx="-30" cy="-20" r="20" fill="#6f6f77"/><circle cx="30" cy="30" r="14" fill="#6f6f77"/><circle cx="20" cy="-40" r="10" fill="#6f6f77"/>
+    <path d="M0,-14 L10,12 L0,6 L-10,12Z" fill="#ff3b30" stroke="#fff" stroke-width="3"/><text y="-104" font-size="22" fill="#fff" text-anchor="middle" stroke="#000" stroke-width="5" paint-order="stroke">АЙ КАРТАСЫ</text></g></g>`;
+}
+function renderAt(t){
+  const sh=TIMELINE.shots;let i=sh.length-1;while(i>0&&sh[i].start>t)i--;const s=sh[i];
+  if(i!==cur){cur=i;stage.innerHTML=`<svg class="scn" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">${DEFS2}<rect width="1920" height="1080" fill="#fff"/><g id="cam">${S2[s.scene]()}</g>${hud(s)}</svg>`;camG=document.getElementById('cam');}
+  const u=ease(Math.min(1,Math.max(0,(t-s.start)/(s.end-s.start))));const [a,b]=s.cam,x=a[0]+(b[0]-a[0])*u,y=a[1]+(b[1]-a[1])*u,w=a[2]+(b[2]-a[2])*u;
+  camG.setAttribute('transform',`scale(${1920/w}) translate(${-x},${-y})`);
+  const ms=(t-s.start)*1000;for(const an of document.getAnimations()){an.pause();an.currentTime=ms}return i;
+}
+window.renderAt=renderAt;
+</script></body></html>

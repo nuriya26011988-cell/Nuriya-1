@@ -13,6 +13,11 @@ const BRAND=`<defs>
  <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff1b8"/><stop offset=".45" stop-color="#f3c74f"/><stop offset="1" stop-color="#c98b1c"/></linearGradient>
  <linearGradient id="band" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#0b1a22" stop-opacity=".92"/><stop offset=".42" stop-color="#0d2630" stop-opacity=".78"/><stop offset=".62" stop-color="#0d2630" stop-opacity="0"/></linearGradient>
  <radialGradient id="badgeBg" cx="50%" cy="40%" r="60%"><stop offset="0" stop-color="#f3c74f"/><stop offset="1" stop-color="#8a5a1c"/></radialGradient>
+ <linearGradient id="acc-yellow" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fffb7a"/><stop offset=".5" stop-color="#ffe600"/><stop offset="1" stop-color="#ffb300"/></linearGradient>
+ <linearGradient id="acc-orange" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd35c"/><stop offset=".5" stop-color="#ff8a00"/><stop offset="1" stop-color="#ff4d00"/></linearGradient>
+ <linearGradient id="acc-cyan" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b8ffff"/><stop offset=".5" stop-color="#22e6ff"/><stop offset="1" stop-color="#00a8e8"/></linearGradient>
+ <linearGradient id="acc-gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff1b8"/><stop offset=".45" stop-color="#f3c74f"/><stop offset="1" stop-color="#c98b1c"/></linearGradient>
+ <filter id="glow" x="-10%" y="-30%" width="120%" height="160%"><feGaussianBlur in="SourceAlpha" stdDeviation="14" result="b"/><feFlood flood-color="var(--glow,#ff9d00)"/><feComposite in2="b" operator="in" result="g"/><feMerge><feMergeNode in="g"/><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
  <filter id="sh" x="-10%" y="-10%" width="130%" height="140%"><feDropShadow dx="6" dy="8" stdDeviation="0" flood-color="#000" flood-opacity=".6"/></filter></defs>`;
 function mapBand(){ // faint explorer-map lines + compass on the dark band, like the channel banner
   let rose='';for(let i=0;i<8;i++){const a=i*Math.PI/4,l=i%2?60:110,b=a+Math.PI/2;rose+=`M0,0 L${r1(Math.cos(b)*12)},${r1(Math.sin(b)*12)} L${r1(Math.cos(a)*l)},${r1(Math.sin(a)*l)}Z `}
@@ -20,9 +25,12 @@ function mapBand(){ // faint explorer-map lines + compass on the dark band, like
    `<g opacity=".16" stroke="#e9c46a" fill="none" stroke-width="3"><path d="M-40,300 C200,240 420,380 700,300 M-40,620 C260,560 500,700 820,600 M120,0 C80,300 160,700 90,1080 M560,0 C620,260 520,640 600,1080" stroke-dasharray="14 12"/>
    <circle cx="760" cy="860" r="120"/><path transform="translate(760,860)" d="${rose}" fill="#e9c46a" fill-opacity=".5"/></g>`;
 }
+let ACC={fill:'url(#acc-gold)',glow:''};
+const GLOWS={yellow:'#ffb300',orange:'#ff3d00',cyan:'#0088ff',gold:''};
 function title(a,b,c,bSize=200){
+  const L2=(t,y,size)=>`<g ${ACC.glow?`filter="url(#glow)" style="--glow:${ACC.glow}"`:''}><text data-k="txt" x="80" y="${y}" font-family="${TF}" font-weight="900" font-size="${size}" fill="${ACC.fill}" stroke="#000" stroke-width="${r1(size*.13)}" paint-order="stroke" stroke-linejoin="round">${t}</text></g>`;
   const L=(t,y,size,fill)=>`<text data-k="txt" x="80" y="${y}" font-family="${TF}" font-weight="900" font-size="${size}" fill="${fill}" stroke="#000" stroke-width="${r1(size*.13)}" paint-order="stroke" stroke-linejoin="round" filter="url(#sh)">${t}</text>`;
-  return L(a,250,96,'#fff')+L(b,250+bSize*.95,bSize,'url(#gold)')+L(c,250+bSize*.95+130,110,'#fff');
+  return L(a,250,96,'#fff')+L2(b,250+bSize*.95,bSize)+L(c,250+bSize*.95+130,110,'#fff');
 }
 function badge(){ return `<g data-k="txt" transform="translate(80,935)"><circle cx="60" cy="60" r="62" fill="url(#badgeBg)" stroke="#000" stroke-width="6"/>`+
    `<g transform="translate(60,64) scale(.42)">${head(0,0,100,'curious',[0,0])}</g>`+
@@ -42,6 +50,6 @@ const COVERS=[
  {bg:SC_MOON,a:'ЕГЕР СЕН АЙДА',b:'24 САҒАТ',c:'ӨМІР СҮРСЕҢ?',size:200},
  {bg:SC_RAIN,a:'ЖАҢБЫР ЖАУҒАНДА',b:'ЕЖЕЛГІ АДАМДАР',c:'НЕ ІСТЕДІ?',size:112}
 ];
-window.make=i=>{const c=COVERS[i];document.getElementById('out').innerHTML=`<svg class="scn" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">${DEFS2}${BRAND}${c.bg()}${mapBand()}${title(c.a,c.b,c.c,c.size)}${badge()}${baseLine}</svg>`;
+window.make=(i,acc='gold')=>{ACC={fill:`url(#acc-${acc})`,glow:GLOWS[acc]};const c=COVERS[i];document.getElementById('out').innerHTML=`<svg class="scn" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">${DEFS2}${BRAND}${c.bg()}${mapBand()}${title(c.a,c.b,c.c,c.size)}${badge()}${baseLine}</svg>`;
   const sv=document.querySelector('svg');sv.pauseAnimations();sv.setCurrentTime(0);for(const a of document.getAnimations()){a.pause();a.currentTime=2500}};
 </script></body></html>

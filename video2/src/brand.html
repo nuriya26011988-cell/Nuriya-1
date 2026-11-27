@@ -22,10 +22,7 @@ function mapBand(){ // faint explorer-map lines + compass on the dark band, like
 }
 function title(a,b,c,bSize=200){
   const L=(t,y,size,fill)=>`<text data-k="txt" x="80" y="${y}" font-family="${TF}" font-weight="900" font-size="${size}" fill="${fill}" stroke="#000" stroke-width="${r1(size*.13)}" paint-order="stroke" stroke-linejoin="round" filter="url(#sh)">${t}</text>`;
-  const pw=c.length*58+70;
-  return L(a,250,96,'#fff')+L(b,250+bSize*.95,bSize,'url(#gold)')+
-   `<g data-k="txt" filter="url(#sh)"><rect x="80" y="${290+bSize}" width="${pw}" height="120" rx="22" fill="#e5352b" stroke="#000" stroke-width="8"/>`+
-   `<text x="${80+pw/2}" y="${290+bSize+86}" font-family="${TF}" font-weight="900" font-size="84" fill="#fff" text-anchor="middle">${c}</text></g>`;
+  return L(a,250,96,'#fff')+L(b,250+bSize*.95,bSize,'url(#gold)')+L(c,250+bSize*.95+130,110,'#fff');
 }
 function badge(){ return `<g data-k="txt" transform="translate(80,935)"><circle cx="60" cy="60" r="62" fill="url(#badgeBg)" stroke="#000" stroke-width="6"/>`+
    `<g transform="translate(60,64) scale(.42)">${head(0,0,100,'curious',[0,0])}</g>`+

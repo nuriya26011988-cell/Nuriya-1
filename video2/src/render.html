@@ -9,8 +9,12 @@ html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:#000}
 .liftoff{animation:liftoff 4s ease-in .2s both}
 @keyframes puff{0%{transform:scale(.3);opacity:0}30%{opacity:1}100%{transform:scale(1.6) translateY(-40px);opacity:.85}}
 .puff{animation:puff 2.4s ease-out var(--w,0s) both;transform-origin:50% 50%}
-@keyframes cnt{0%{opacity:0;transform:scale(1.6)}10%,85%{opacity:1;transform:scale(1)}100%{opacity:0}}
-.cnt{animation:cnt 1s ease var(--w,0s) both;transform-origin:50% 50%;opacity:0}
+@keyframes cnt{0%{opacity:0;transform:scale(1.6)}12%,80%{opacity:1;transform:scale(1)}100%{opacity:0}}
+.cnt{animation:cnt .75s ease var(--w,0s) both;transform-origin:50% 50%;opacity:0}
+@keyframes liftoff2{0%{transform:translateY(0)}100%{transform:translateY(-1700px)}}
+.liftoff2{animation:liftoff2 3.6s cubic-bezier(.55,0,.9,.6) 5.8s both}
+@keyframes shake{0%,100%{transform:translate(0,0)}25%{transform:translate(-4px,2px)}75%{transform:translate(4px,-2px)}}
+.shake{animation:shake .08s linear var(--w,0s) infinite}
 @keyframes floaty{0%,100%{transform:translate(0,0) rotate(-6deg)}50%{transform:translate(30px,-40px) rotate(8deg)}}
 .floaty{animation:floaty 5s ease-in-out infinite}
 @keyframes spinfloat{0%{transform:translate(0,0) rotate(0)}50%{transform:translate(20px,-30px) rotate(180deg)}100%{transform:translate(0,0) rotate(360deg)}}

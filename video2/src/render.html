@@ -27,7 +27,7 @@ html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:#000}
 .flyacross{animation:flyacross 6s ease-in-out both}
 @keyframes stepin{from{transform:translateX(-180px)}to{transform:translateX(0)}}
 .stepin{animation:stepin 2.2s ease-out both}
-@keyframes moonjump{0%,100%{transform:translateY(0)}45%,55%{transform:translateY(-330px)}}
+@keyframes moonjump{0%,100%{transform:translateY(0)}45%,55%{transform:translateY(var(--h,-330px))}}
 .moonjump{animation:moonjump var(--d,2.6s) ease-in-out infinite}
 @keyframes roll{from{transform:translate(0,0) rotate(0)}to{transform:translate(-500px,260px) rotate(-300deg)}}
 .roll{animation:roll 3.5s ease-in .4s both}

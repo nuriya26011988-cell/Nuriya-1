@@ -18,6 +18,9 @@ const BRAND=`<defs>
  <linearGradient id="acc-cyan" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b8ffff"/><stop offset=".5" stop-color="#22e6ff"/><stop offset="1" stop-color="#00a8e8"/></linearGradient>
  <linearGradient id="acc-gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff1b8"/><stop offset=".45" stop-color="#f3c74f"/><stop offset="1" stop-color="#c98b1c"/></linearGradient>
  <filter id="glow" x="-10%" y="-30%" width="120%" height="160%"><feGaussianBlur in="SourceAlpha" stdDeviation="14" result="b"/><feFlood flood-color="var(--glow,#ff9d00)"/><feComposite in2="b" operator="in" result="g"/><feMerge><feMergeNode in="g"/><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+ <filter id="sat"><feColorMatrix type="saturate" values="1.35"/></filter>
+ <filter id="rim" x="-10%" y="-10%" width="120%" height="120%"><feMorphology in="SourceAlpha" operator="dilate" radius="7" result="d"/><feFlood flood-color="#fff6cf"/><feComposite in2="d" operator="in" result="o"/><feGaussianBlur in="o" stdDeviation="3" result="ob"/><feMerge><feMergeNode in="ob"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+ <radialGradient id="burstG"><stop offset="0" stop-color="#ffe27a" stop-opacity=".95"/><stop offset=".35" stop-color="#f3b632" stop-opacity=".55"/><stop offset="1" stop-color="#f3b632" stop-opacity="0"/></radialGradient>
  <filter id="sh" x="-10%" y="-10%" width="130%" height="140%"><feDropShadow dx="6" dy="8" stdDeviation="0" flood-color="#000" flood-opacity=".6"/></filter></defs>`;
 function mapBand(){ // faint explorer-map lines + compass on the dark band, like the channel banner
   let rose='';for(let i=0;i<8;i++){const a=i*Math.PI/4,l=i%2?60:110,b=a+Math.PI/2;rose+=`M0,0 L${r1(Math.cos(b)*12)},${r1(Math.sin(b)*12)} L${r1(Math.cos(a)*l)},${r1(Math.sin(a)*l)}Z `}
@@ -30,7 +33,7 @@ const GLOWS={yellow:'#ffb300',orange:'#ff3d00',cyan:'#0088ff',gold:''};
 function title(a,b,c,bSize=200){
   const L2=(t,y,size)=>`<g ${ACC.glow?`filter="url(#glow)" style="--glow:${ACC.glow}"`:''}><text data-k="txt" x="80" y="${y}" font-family="${TF}" font-weight="900" font-size="${size}" fill="${ACC.fill}" stroke="#000" stroke-width="${r1(size*.13)}" paint-order="stroke" stroke-linejoin="round">${t}</text></g>`;
   const L=(t,y,size,fill)=>`<text data-k="txt" x="80" y="${y}" font-family="${TF}" font-weight="900" font-size="${size}" fill="${fill}" stroke="#000" stroke-width="${r1(size*.13)}" paint-order="stroke" stroke-linejoin="round" filter="url(#sh)">${t}</text>`;
-  return L(a,250,96,'#fff')+L2(b,250+bSize*.95,bSize)+L(c,250+bSize*.95+130,110,'#fff');
+  return `<g transform="translate(0,0) skewX(-7) translate(40,0)">`+L(a,250,96,'#fff')+L2(b,250+bSize*.95,bSize)+L(c,250+bSize*.95+130,110,'#fff')+`</g>`;
 }
 function badge(){ return `<g data-k="txt" transform="translate(80,935)"><circle cx="60" cy="60" r="62" fill="url(#badgeBg)" stroke="#000" stroke-width="6"/>`+
    `<g transform="translate(60,64) scale(.42)">${head(0,0,100,'curious',[0,0])}</g>`+
@@ -39,17 +42,22 @@ function badge(){ return `<g data-k="txt" transform="translate(80,935)"><circle 
 const baseLine=`<rect y="1062" width="1920" height="18" fill="url(#gold)"/>`;
 const openMouth=(x,y,s)=>`<g transform="translate(${x},${y}) scale(${s})"><path d="M-60,0 C-60,-70 60,-70 60,0 C60,70 -60,70 -60,0Z" fill="#3b1212" stroke="#161616" stroke-width="14"/><path d="M-36,40 C-20,14 20,14 36,40 C20,52 -20,52 -36,40Z" fill="#e2574c"/><path d="M-42,-34 H42" stroke="#fff" stroke-width="13" stroke-linecap="round"/></g>`;
 const drop=(x,y,s=1)=>`<path d="M${x},${y} q-${22*s},${40*s} 0,${52*s} q${22*s},-${12*s} 0,-${52*s}Z" fill="#6ec3ff" stroke="#000" stroke-width="${5*s}"/>`;
+function burst(cx,cy,R=900){let d='';for(let i=0;i<22;i++){const a=i/22*Math.PI*2,w=.07;d+=`M${cx},${cy} L${r1(cx+Math.cos(a-w)*R)},${r1(cy+Math.sin(a-w)*R)} L${r1(cx+Math.cos(a+w)*R)},${r1(cy+Math.sin(a+w)*R)}Z `}
+  return `<path d="${d}" fill="url(#burstG)" opacity=".55"/><circle cx="${cx}" cy="${cy}" r="${R*.42}" fill="url(#burstG)" opacity=".7"/>`;}
+const spark=(x,y,s=1)=>`<path transform="translate(${x},${y}) scale(${s})" d="M0,-34 C4,-8 8,-4 34,0 C8,4 4,8 0,34 C-4,8 -8,4 -34,0 C-8,-4 -4,-8 0,-34Z" fill="#fff6c4" stroke="#000" stroke-width="3"/>`;
 /* scenes (right side) */
-const SC_MOON=()=>space(4)+earth(1640,290,250)+moonGround(820,4)+lander(1080,960,.5)+
-  astro(1520,1470,2.05,{arms:'up',mood:'scared',big:1})+openMouth(1520,1470-410*2.05+105*2.05*.45,1.05)+drop(1200,430,1.3)+drop(1840,560,1.1);
-const SC_RAIN=()=>{window.NO_MOUTH=true;const g=stormSky()+`<path d="M0,862 C300,846 600,876 960,858 C1300,842 1600,868 1920,852 V1080 H0Z" fill="#8a6a45" stroke="${INK}" stroke-width="6"/>`+grass(840,900,500,['#6e6535','#857a40','#5a5230'],12)+
-  boulderCave(1600,960,1.15,3)+'<g data-k="hero">'+G(seatedLegs()+tunic(74)+arm('M-52,-214 Q-10,-170 34,-168')+arm('M52,-214 Q96,-206 106,-176')+hand(46,-184)+hand(108,-172)+head(0,-330,100,'worried',[-.1,.05],true),{t:'translate(1590,1040) scale(1.55)'})+'</g>'+
-  `<path d="M1590,${r1(1040-1.55*330+1.55*100*.43)} m-40,8 q40,-31 80,0" fill="none" stroke="#161616" stroke-width="13" stroke-linecap="round"/>`+
-  drop(1400,400,1.3)+drop(1800,420,1.1)+rain(260,{op:.75,d:.5,col:'#dce6f0',w:4});window.NO_MOUTH=false;return g};
+const SC_MOON=()=>`<g filter="url(#sat)">`+space(4)+earth(1700,240,230)+moonGround(820,4)+lander(1060,960,.5)+`</g>`+burst(1570,620)+
+  `<g filter="url(#rim)">`+astro(1570,1480,2,{arms:'up',mood:'scared',big:1})+openMouth(1570,1480-410*2+105*2*.45,1.03)+`</g>`+drop(1260,440,1.3)+drop(1820,560,1.1)+spark(1130,250,1.2)+spark(1860,820,.9);
+const SC_RAIN=()=>{window.NO_MOUTH=true;const hy=1040-1.55*330;
+  const g=`<g filter="url(#sat)">`+stormSky()+`<path d="M0,862 C300,846 600,876 960,858 C1300,842 1600,868 1920,852 V1080 H0Z" fill="#8a6a45" stroke="${INK}" stroke-width="6"/>`+grass(840,900,500,['#6e6535','#857a40','#5a5230'],12)+
+  boulderCave(1600,960,1.15,3)+`</g>`+burst(1560,hy,820)+
+  `<g filter="url(#rim)"><g data-k="hero">`+heroSeat(1560,1040,1.55,{arms:'knees',mood:'scared',look:[-.1,0],big:1})+`</g>`+
+  openMouth(1560,hy+1.55*100*.47,.72)+`</g>`+
+  drop(1400,400,1.3)+drop(1800,420,1.1)+rain(220,{op:.7,d:.5,col:'#dce6f0',w:4})+spark(1820,640,1);window.NO_MOUTH=false;return g};
 const COVERS=[
- {bg:SC_MOON,a:'ЕГЕР СЕН АЙДА',b:'24 САҒАТ',c:'ӨМІР СҮРСЕҢ?',size:200},
+ {bg:SC_MOON,a:'ЕГЕР СЕН АЙДА',b:'24 САҒАТ',c:'ӨМІР СҮРСЕҢ?',size:185},
  {bg:SC_RAIN,a:'ЖАҢБЫР ЖАУҒАНДА',b:'ЕЖЕЛГІ АДАМДАР',c:'НЕ ІСТЕДІ?',size:112}
 ];
-window.make=(i,acc='gold')=>{ACC={fill:`url(#acc-${acc})`,glow:GLOWS[acc]};const c=COVERS[i];document.getElementById('out').innerHTML=`<svg class="scn" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">${DEFS2}${BRAND}${c.bg()}${mapBand()}${title(c.a,c.b,c.c,c.size)}${badge()}${baseLine}</svg>`;
+window.make=(i,acc='yellow')=>{ACC={fill:`url(#acc-${acc})`,glow:GLOWS[acc]};const c=COVERS[i];document.getElementById('out').innerHTML=`<svg class="scn" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">${DEFS2}${BRAND}${c.bg()}${mapBand()}${title(c.a,c.b,c.c,c.size)}${badge()}${baseLine}</svg>`;
   const sv=document.querySelector('svg');sv.pauseAnimations();sv.setCurrentTime(0);for(const a of document.getAnimations()){a.pause();a.currentTime=2500}};
 </script></body></html>
